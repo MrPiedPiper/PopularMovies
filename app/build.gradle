@@ -26,11 +26,17 @@ dependencies {
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
 
+    //RecyclerView Library
     implementation 'com.android.support:recyclerview-v7:26.1.0'
 
+    //Utility Libraries
     implementation 'com.google.code.gson:gson:2.8.4'
+
     implementation 'com.squareup.picasso:picasso:2.71828'
+
     implementation 'com.jakewharton:butterknife:8.8.1'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
+
     compile 'com.squareup.okhttp3:okhttp:3.10.0'
+    compile 'com.squareup.okio:okio:1.14.0'
 }

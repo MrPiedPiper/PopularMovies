@@ -1,5 +1,14 @@
 package com.fancystachestudios.popularmovies.popularmovies.Utils;
 
+import android.content.Context;
+import android.os.AsyncTask;
+import android.util.Log;
+
+import com.fancystachestudios.popularmovies.popularmovies.MainActivity;
+import com.fancystachestudios.popularmovies.popularmovies.MovieAPI.MovieObject;
+import com.google.gson.Gson;
+
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -8,6 +17,8 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 
+import okhttp3.Call;
+import okhttp3.Callback;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -18,37 +29,70 @@ import okhttp3.Response;
 
 public class NetworkUtils {
 
-    public static URI buildUriFromUrl(URL url){
+
+    public static URI buildUriFromUrl(URL url) {
         URI returnUri = null;
-        try{
+        try {
             returnUri = url.toURI();
-            } catch (URISyntaxException e) {
+        } catch (URISyntaxException e) {
             e.printStackTrace();
         }
         return returnUri;
     }
 
-    public static JSONObject stringToJson (String string){
-        JSONObject returnJsonObject = null;
-        try{
-            returnJsonObject = new JSONObject(string);
+    public static JSONObject stringToJsonObject(String string) {
+        JSONObject returnJson = null;
+        try {
+            returnJson = new JSONObject(string);
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        return returnJsonObject;
+        return returnJson;
     }
 
-    public static JSONObject getJsonFromUrl(URL url) throws IOException {
-        JSONObject returnJson;
+    public static void getJsonFromUrl(URL url) {
+
+        //Followed these instructions to learn how to use OkHttp http://www.vogella.com/tutorials/JavaLibrary-OkHttp/article.html
 
         OkHttpClient client = new OkHttpClient();
+
         Request request = new Request.Builder()
-                .url(url)
+                .url(url.toString())
                 .build();
-        Response response = client.newCall(request).execute();
 
-        returnJson = stringToJson(response.body().string());
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                e.printStackTrace();
+            }
 
-        return returnJson;
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if (!response.isSuccessful()) {
+                    throw new IOException("Unexpected code " + response);
+                } else {
+                    String resultString = response.body().string();
+                    Log.d("naputest", resultString);
+                    JSONObject baseJsonResults = stringToJsonObject(resultString);
+                    MovieObject[] movies = getMovieArrayFromJsonResults(baseJsonResults);
+                    MainActivity.refreshMovies(movies);
+                }
+            }
+        });
+    }
+
+    private static MovieObject[] getMovieArrayFromJsonResults(JSONObject jsonResults) {
+        try {
+            Gson gson = new Gson();
+            JSONArray jsonArrayMovies = jsonResults.getJSONArray("results");
+            MovieObject[] movies = new MovieObject[jsonArrayMovies.length()];
+            for(int i = 0; i < jsonArrayMovies.length(); i++){
+                movies[i] = gson.fromJson(jsonArrayMovies.get(i).toString(), MovieObject.class);
+            }
+            return movies;
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }
