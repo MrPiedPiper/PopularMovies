@@ -28,7 +28,7 @@ public class MovieObject {
     }
 
     public void setVoteCount(int newVoteCount){
-        voteCount = newVoteCount;
+        this.voteCount = newVoteCount;
     }
 
     public int getVoteCount(){
@@ -36,7 +36,7 @@ public class MovieObject {
     }
 
     public void setId(int newId){
-        id = newId;
+        this.id = newId;
     }
 
     public int getid(){
@@ -44,7 +44,7 @@ public class MovieObject {
     }
 
     public void setVideo(boolean newVideo){
-        video = newVideo;
+        this.video = newVideo;
     }
 
     public boolean getVideo(){
@@ -52,7 +52,7 @@ public class MovieObject {
     }
 
     public void setVoteAverage(int newAverage){
-        voteAverage = newAverage;
+        this.voteAverage = newAverage;
     }
 
     public float getVoteAverage(){
@@ -60,7 +60,7 @@ public class MovieObject {
     }
 
     public void setTitle(String newTitle){
-        title = newTitle;
+        this.title = newTitle;
     }
 
     public String getTitle(){
@@ -68,7 +68,7 @@ public class MovieObject {
     }
 
     public void setPopularity(int newPopularity){
-        popularity = newPopularity;
+        this.popularity = newPopularity;
     }
 
     public float getPopularity(){
@@ -76,7 +76,7 @@ public class MovieObject {
     }
 
     public void setPosterPath(String newPosterPath){
-        posterPath = newPosterPath;
+        this.posterPath = newPosterPath;
     }
 
     public String getPosterPath(){
@@ -84,7 +84,7 @@ public class MovieObject {
     }
 
     public void setOriginalLanguage(String newOriginalLanguage){
-        originalLanguage = newOriginalLanguage;
+        this.originalLanguage = newOriginalLanguage;
     }
 
     public String getOriginalLanguage(){
@@ -92,7 +92,7 @@ public class MovieObject {
     }
 
     public void setOriginalTitle(String newOriginalTitle){
-        originalTitle = newOriginalTitle;
+        this.originalTitle = newOriginalTitle;
     }
 
     public String getOriginalTitle(){
@@ -100,7 +100,7 @@ public class MovieObject {
     }
 
     public void setGenreIds(int[] newGenreIds){
-        genreIds = newGenreIds;
+        this.genreIds = newGenreIds;
     }
 
     public int[] getGenreids(){
@@ -108,7 +108,7 @@ public class MovieObject {
     }
 
     public void setBackdropPath(String newBackdropPath){
-        backdropPath = newBackdropPath;
+        this.backdropPath = newBackdropPath;
     }
 
     public String getBackdropPath(){
@@ -116,7 +116,7 @@ public class MovieObject {
     }
 
     public void setAdult(boolean newAdult){
-        adult = newAdult;
+        this.adult = newAdult;
     }
 
     public boolean getAdult(){
@@ -124,7 +124,7 @@ public class MovieObject {
     }
 
     public void setOverview(String newOverview){
-        overview = newOverview;
+        this.overview = newOverview;
     }
 
     public String getOverview(){
@@ -132,7 +132,7 @@ public class MovieObject {
     }
 
     public void setReleaseDate(String newReleaseDate){
-        releaseDate = newReleaseDate;
+        this.releaseDate = newReleaseDate;
     }
 
     public String getReleaseDate(){
