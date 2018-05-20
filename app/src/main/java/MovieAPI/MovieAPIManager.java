@@ -3,7 +3,7 @@ package MovieAPI;
 import com.google.gson.Gson;
 
 /**
- * Created by napuk on 5/19/2018.
+ * MovieAPIManager is a utility class for interacting with the themoviedb.org API
  */
 
 public class MovieAPIManager {
@@ -13,6 +13,8 @@ public class MovieAPIManager {
     private static String PART1 = "https://api.themoviedb.org/3/discover/movie?api_key=";
     private static String PART2 = "&language=en-US&sort_by=";
     private static String PART3 = "&include_adult=false&include_video=false&page=1";
+
+    private static String IMAGE_BASE = "http://image.tmdb.org/t/p/";
 
     private static String POPULARITY = "popularity.asc";
     private static String RATING = "vote_average.desc";
