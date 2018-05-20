@@ -1,6 +1,4 @@
-package MovieAPI;
-
-import android.graphics.Movie;
+package com.fancystachestudios.popularmovies.popularmovies.MovieAPI;
 
 /**
  * MovieObject class is a template for the MovieObject
@@ -27,8 +25,38 @@ public class MovieObject {
         super();
     }
 
+    public MovieObject(int voteCount,
+                       int id,
+                       boolean video,
+                       float voteAverage,
+                       String title,
+                       float popularity,
+                       String posterPath,
+                       String originalLanguage,
+                       String originalTitle,
+                       int[] genreIds,
+                       String backdropPath,
+                       boolean adult,
+                       String overview,
+                       String releaseDate){
+        this.voteCount = voteCount;
+        this.id = id;
+        this.video = video;
+        this.voteAverage = voteAverage;
+        this.title = title;
+        this.popularity = popularity;
+        this.posterPath = posterPath;
+        this.originalLanguage = originalLanguage;
+        this.originalTitle = originalTitle;
+        this.genreIds = genreIds;
+        this.backdropPath = backdropPath;
+        this.adult = adult;
+        this.overview = overview;
+        this.releaseDate = releaseDate;
+    }
+
     public void setVoteCount(int newVoteCount){
-        this.voteCount = newVoteCount;
+        this.voteCount = voteCount;
     }
 
     public int getVoteCount(){
@@ -36,7 +64,7 @@ public class MovieObject {
     }
 
     public void setId(int newId){
-        this.id = newId;
+        this.id = id;
     }
 
     public int getid(){
@@ -44,7 +72,7 @@ public class MovieObject {
     }
 
     public void setVideo(boolean newVideo){
-        this.video = newVideo;
+        this.video = video;
     }
 
     public boolean getVideo(){
@@ -52,7 +80,7 @@ public class MovieObject {
     }
 
     public void setVoteAverage(int newAverage){
-        this.voteAverage = newAverage;
+        this.voteAverage = voteAverage;
     }
 
     public float getVoteAverage(){
@@ -60,7 +88,7 @@ public class MovieObject {
     }
 
     public void setTitle(String newTitle){
-        this.title = newTitle;
+        this.title = title;
     }
 
     public String getTitle(){
@@ -68,7 +96,7 @@ public class MovieObject {
     }
 
     public void setPopularity(int newPopularity){
-        this.popularity = newPopularity;
+        this.popularity = popularity;
     }
 
     public float getPopularity(){
@@ -76,7 +104,7 @@ public class MovieObject {
     }
 
     public void setPosterPath(String newPosterPath){
-        this.posterPath = newPosterPath;
+        this.posterPath = posterPath;
     }
 
     public String getPosterPath(){
@@ -84,7 +112,7 @@ public class MovieObject {
     }
 
     public void setOriginalLanguage(String newOriginalLanguage){
-        this.originalLanguage = newOriginalLanguage;
+        this.originalLanguage = originalLanguage;
     }
 
     public String getOriginalLanguage(){
@@ -92,7 +120,7 @@ public class MovieObject {
     }
 
     public void setOriginalTitle(String newOriginalTitle){
-        this.originalTitle = newOriginalTitle;
+        this.originalTitle = originalTitle;
     }
 
     public String getOriginalTitle(){
@@ -100,7 +128,7 @@ public class MovieObject {
     }
 
     public void setGenreIds(int[] newGenreIds){
-        this.genreIds = newGenreIds;
+        this.genreIds = genreIds;
     }
 
     public int[] getGenreids(){
@@ -108,7 +136,7 @@ public class MovieObject {
     }
 
     public void setBackdropPath(String newBackdropPath){
-        this.backdropPath = newBackdropPath;
+        this.backdropPath = backdropPath;
     }
 
     public String getBackdropPath(){
@@ -116,7 +144,7 @@ public class MovieObject {
     }
 
     public void setAdult(boolean newAdult){
-        this.adult = newAdult;
+        this.adult = adult;
     }
 
     public boolean getAdult(){
@@ -124,7 +152,7 @@ public class MovieObject {
     }
 
     public void setOverview(String newOverview){
-        this.overview = newOverview;
+        this.overview = overview;
     }
 
     public String getOverview(){
@@ -132,7 +160,7 @@ public class MovieObject {
     }
 
     public void setReleaseDate(String newReleaseDate){
-        this.releaseDate = newReleaseDate;
+        this.releaseDate = releaseDate;
     }
 
     public String getReleaseDate(){
