@@ -1,12 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout
+    android:id="@+id/item_root_layout"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="0dp"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
+    <ImageView
+        android:alpha="0.5"
+        android:id="@+id/item_background_image"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:adjustViewBounds="true"/>
+
     <TextView
-        android:id="@+id/test_text"
+        android:id="@+id/item_list_number_text"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimaryDark"
+        android:textColor="#FFF"/>
 
 </android.support.constraint.ConstraintLayout>
