@@ -2,6 +2,7 @@ package com.fancystachestudios.popularmovies.popularmovies.Utils;
 
 import android.content.Context;
 import android.os.AsyncTask;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
 import com.fancystachestudios.popularmovies.popularmovies.MainActivity;
@@ -27,10 +28,11 @@ import okhttp3.Response;
  * Created by napuk on 5/20/2018.
  */
 
-public class NetworkUtils {
+public class NetworkUtils extends AppCompatActivity{
 
+    MovieObject[] movies = new MovieObject[0];
 
-    public static URI buildUriFromUrl(URL url) {
+    public URI buildUriFromUrl(URL url) {
         URI returnUri = null;
         try {
             returnUri = url.toURI();
@@ -40,7 +42,7 @@ public class NetworkUtils {
         return returnUri;
     }
 
-    public static JSONObject stringToJsonObject(String string) {
+    public JSONObject stringToJsonObject(String string) {
         JSONObject returnJson = null;
         try {
             returnJson = new JSONObject(string);
@@ -50,7 +52,7 @@ public class NetworkUtils {
         return returnJson;
     }
 
-    public static void getJsonFromUrl(URL url) {
+    public MovieObject[] getMoviesFromUrl(URL url) {
 
         //Followed these instructions to learn how to use OkHttp http://www.vogella.com/tutorials/JavaLibrary-OkHttp/article.html
 
@@ -60,28 +62,33 @@ public class NetworkUtils {
                 .url(url.toString())
                 .build();
 
+        Response response = null;
+            //response = client.newCall(request).execute();
+
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
                 e.printStackTrace();
             }
-
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-                if (!response.isSuccessful()) {
+                if(!response.isSuccessful()){
                     throw new IOException("Unexpected code " + response);
-                } else {
+                }else{
                     String resultString = response.body().string();
-                    Log.d("naputest", resultString);
                     JSONObject baseJsonResults = stringToJsonObject(resultString);
-                    MovieObject[] movies = getMovieArrayFromJsonResults(baseJsonResults);
-                    MainActivity.refreshMovies(movies);
+                    setMovies(getMovieArrayFromJsonResults(baseJsonResults));
                 }
             }
         });
+        return movies;
     }
 
-    private static MovieObject[] getMovieArrayFromJsonResults(JSONObject jsonResults) {
+    private void setMovies(MovieObject[] movies){
+        this.movies = movies;
+    }
+
+    private MovieObject[] getMovieArrayFromJsonResults(JSONObject jsonResults) {
         try {
             Gson gson = new Gson();
             JSONArray jsonArrayMovies = jsonResults.getJSONArray("results");
