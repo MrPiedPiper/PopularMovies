@@ -54,7 +54,10 @@ public class MainActivity extends AppCompatActivity {
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
+        Log.d("testing", "1");
         MovieObject[] movies = networkUtils.getMoviesFromUrl(testUrl);
+        Log.d("testing", "2");
+        Log.d("testing", String.valueOf(movies.length));
         refreshMovies(movies);
     }
 

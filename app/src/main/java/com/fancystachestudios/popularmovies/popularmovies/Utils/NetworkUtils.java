@@ -78,6 +78,7 @@ public class NetworkUtils extends AppCompatActivity{
                     String resultString = response.body().string();
                     JSONObject baseJsonResults = stringToJsonObject(resultString);
                     setMovies(getMovieArrayFromJsonResults(baseJsonResults));
+                    
                 }
             }
         });
