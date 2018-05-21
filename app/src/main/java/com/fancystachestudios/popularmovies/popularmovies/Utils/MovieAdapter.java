@@ -1,13 +1,17 @@
 package com.fancystachestudios.popularmovies.popularmovies.Utils;
 
+import android.graphics.Movie;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.fancystachestudios.popularmovies.popularmovies.MovieAPI.MovieObject;
 import com.fancystachestudios.popularmovies.popularmovies.R;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -15,27 +19,23 @@ import java.util.List;
  */
 
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> {
-    private MovieObject[] mDataset;
-
-    public void setMovies (MovieObject[] movies){
-        mDataset = movies;
-    }
+    private ArrayList<MovieObject> mDataset;
 
     public static class ViewHolder extends  RecyclerView.ViewHolder{
         public TextView mTextView;
-        public ViewHolder (TextView v){
+        public ViewHolder (View v){
             super(v);
-            mTextView = v;
+            mTextView = v.findViewById(R.id.test_text);
         }
     }
 
-    public MovieAdapter(MovieObject[] myDataSet){
+    public MovieAdapter(ArrayList<MovieObject> myDataSet){
         mDataset = myDataSet;
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        TextView v = (TextView) LayoutInflater.from(parent.getContext())
+        View v = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.test_text_view, parent, false);
 
         ViewHolder vh = new ViewHolder(v);
@@ -44,15 +44,21 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        holder.mTextView.setText(mDataset[position].getTitle());
+        Log.d("mytest", "viewholder #:" + String.valueOf(position));
+        Log.d("mytest", String.valueOf(mDataset.size()));
+        Log.d("mytest", mDataset.get(position).getTitle());
+        Log.d("mytest", mDataset.get(position).getBackdropPath());
+        Log.d("mytest", mDataset.get(position).getPosterPath());
+        holder.mTextView.setText(mDataset.get(position).getTitle());
     }
 
     @Override
     public int getItemCount() {
-        return mDataset.length;
+        return mDataset.size();
     }
 
-    public void refreshMovies() {
-        this.notifyDataSetChanged();
+    public void updateList(ArrayList<MovieObject> newMovies){
+        mDataset = newMovies;
+        notifyDataSetChanged();
     }
 }

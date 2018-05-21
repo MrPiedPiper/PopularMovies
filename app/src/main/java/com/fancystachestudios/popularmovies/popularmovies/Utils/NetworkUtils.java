@@ -17,6 +17,8 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -30,7 +32,7 @@ import okhttp3.Response;
 
 public class NetworkUtils extends AppCompatActivity{
 
-    MovieObject[] movies = new MovieObject[0];
+    CustomMovieList customMovieList = new CustomMovieList();
 
     public URI buildUriFromUrl(URL url) {
         URI returnUri = null;
@@ -52,7 +54,7 @@ public class NetworkUtils extends AppCompatActivity{
         return returnJson;
     }
 
-    public MovieObject[] getMoviesFromUrl(URL url) {
+    public ArrayList<MovieObject> getMoviesFromUrl(URL url) throws IOException {
 
         //Followed these instructions to learn how to use OkHttp http://www.vogella.com/tutorials/JavaLibrary-OkHttp/article.html
 
@@ -62,40 +64,26 @@ public class NetworkUtils extends AppCompatActivity{
                 .url(url.toString())
                 .build();
 
-        Response response = null;
-            //response = client.newCall(request).execute();
+        Response response = client.newCall(request).execute();
 
-        client.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                e.printStackTrace();
-            }
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                if(!response.isSuccessful()){
-                    throw new IOException("Unexpected code " + response);
-                }else{
-                    String resultString = response.body().string();
-                    JSONObject baseJsonResults = stringToJsonObject(resultString);
-                    setMovies(getMovieArrayFromJsonResults(baseJsonResults));
-                    
-                }
-            }
-        });
+        String resultString = response.body().string();
+        JSONObject baseJsonResults = stringToJsonObject(resultString);
+        ArrayList<MovieObject> movies = getMovieArrayFromJsonResults(baseJsonResults);
         return movies;
     }
 
-    private void setMovies(MovieObject[] movies){
-        this.movies = movies;
-    }
-
-    private MovieObject[] getMovieArrayFromJsonResults(JSONObject jsonResults) {
+    private ArrayList<MovieObject> getMovieArrayFromJsonResults(JSONObject jsonResults) {
         try {
             Gson gson = new Gson();
             JSONArray jsonArrayMovies = jsonResults.getJSONArray("results");
-            MovieObject[] movies = new MovieObject[jsonArrayMovies.length()];
+            ArrayList<MovieObject> movies = new ArrayList<>();
             for(int i = 0; i < jsonArrayMovies.length(); i++){
-                movies[i] = gson.fromJson(jsonArrayMovies.get(i).toString(), MovieObject.class);
+                //movies.add(i, gson.fromJson(jsonArrayMovies.get(i).toString(), MovieObject.class));
+                MovieObject currMovie = gson.fromJson(jsonArrayMovies.get(i).toString(), MovieObject.class);
+                movies.add(i, currMovie);
+                Log.d("testing", "Number " + i);
+                Log.d("testing", "Array is " + movies.size());
+                Log.d("testing", "Movie is " + movies.get(i).getTitle());
             }
             return movies;
         } catch (JSONException e) {

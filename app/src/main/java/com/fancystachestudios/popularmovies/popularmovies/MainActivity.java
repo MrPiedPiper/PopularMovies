@@ -1,5 +1,6 @@
 package com.fancystachestudios.popularmovies.popularmovies;
 
+import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
@@ -8,6 +9,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.fancystachestudios.popularmovies.popularmovies.MovieAPI.MovieObject;
+import com.fancystachestudios.popularmovies.popularmovies.Utils.CustomMovieList;
 import com.fancystachestudios.popularmovies.popularmovies.Utils.MovieAdapter;
 import com.fancystachestudios.popularmovies.popularmovies.Utils.NetworkUtils;
 
@@ -17,6 +19,8 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -26,15 +30,19 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
 
-    MovieObject[] movieArray = new MovieObject[0];
-
     NetworkUtils networkUtils = new NetworkUtils();
+    CustomMovieList customMovieList = new CustomMovieList();
+
+
+    ArrayList<MovieObject> movieArray;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+
+        movieArray = new ArrayList<MovieObject>();
 
         mRecyclerView.setHasFixedSize(true);
 
@@ -44,30 +52,54 @@ public class MainActivity extends AppCompatActivity {
         mAdapter = new MovieAdapter(movieArray);
         mRecyclerView.setAdapter(mAdapter);
 
-        myTest();
+        new myTest().execute();
     }
 
-    private void myTest(){
-        URL testUrl = null;
-        try {
-            testUrl = new URL("https://api.themoviedb.org/3/discover/movie?api_key=d4eebd22dad46597eeaa3f0851eef72f&language=en-US&sort_by=popularity.desc&include_adult=false&include_video=false&page=1");
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
+    private class myTest extends AsyncTask<Void, Void, Void>{
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            URL testUrl = null;
+            try {
+                testUrl = new URL("https://api.themoviedb.org/3/discover/movie?api_key=d4eebd22dad46597eeaa3f0851eef72f&language=en-US&sort_by=popularity.desc&include_adult=false&include_video=false&page=1");
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            }
+            ArrayList<MovieObject> movies = new ArrayList<MovieObject>();
+            try {
+                movies = networkUtils.getMoviesFromUrl(testUrl);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            refreshMovies(movies);
+            return null;
         }
-        Log.d("testing", "1");
-        MovieObject[] movies = networkUtils.getMoviesFromUrl(testUrl);
-        Log.d("testing", "2");
-        Log.d("testing", String.valueOf(movies.length));
-        refreshMovies(movies);
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+        }
     }
 
-    public void refreshMovies(MovieObject[] movies){
+    public void refreshMovies(ArrayList<MovieObject> movies){
+        Log.d("mytest", "Length is "+movies.size());
+        if(movies.size() == 0) {
+            Log.d("errortime", "It's empty :<");
+        }
+        /**
         for(MovieObject currMovie : movies){
-            Log.d("movieTest", currMovie.getTitle() + currMovie.getVoteCount());
+            //Log.d("movieTest", currMovie.getTitle() + "Votes: " + currMovie.getVoteCount());
         }
+         **/
         movieArray = movies;
-        mAdapter = new MovieAdapter(movieArray);
-        mAdapter.notifyDataSetChanged();
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                RecyclerView.Adapter newAdapter = new MovieAdapter(movieArray);
+                mRecyclerView.swapAdapter(newAdapter, true);
+                mAdapter.notifyDataSetChanged();
+            }
+        });
         //Toast.makeText(this, testString, Toast.LENGTH_SHORT);
     }
 }
