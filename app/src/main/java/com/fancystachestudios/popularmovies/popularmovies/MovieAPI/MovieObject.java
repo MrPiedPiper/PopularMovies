@@ -6,61 +6,61 @@ package com.fancystachestudios.popularmovies.popularmovies.MovieAPI;
 
 public class MovieObject {
 
-    private int voteCount;
+    private int vote_count;
     private int id;
     private boolean video;
-    private float voteAverage;
+    private float vote_average;
     private String title;
     private float popularity;
-    private String posterPath;
-    private String originalLanguage;
-    private String originalTitle;
-    private int[] genreIds;
-    private String backdropPath;
+    private String poster_path;
+    private String original_language;
+    private String original_title;
+    private int[] genre_ids;
+    private String backdrop_path;
     private boolean adult;
     private String overview;
-    private String releaseDate;
+    private String release_date;
 
     public MovieObject(){
         super();
     }
 
-    public MovieObject(int voteCount,
+    public MovieObject(int vote_count,
                        int id,
                        boolean video,
-                       float voteAverage,
+                       float vote_average,
                        String title,
                        float popularity,
-                       String posterPath,
-                       String originalLanguage,
-                       String originalTitle,
-                       int[] genreIds,
-                       String backdropPath,
+                       String poster_path,
+                       String original_language,
+                       String original_title,
+                       int[] genre_ids,
+                       String backdrop_path,
                        boolean adult,
                        String overview,
-                       String releaseDate){
-        this.voteCount = voteCount;
+                       String release_date){
+        this.vote_count = vote_count;
         this.id = id;
         this.video = video;
-        this.voteAverage = voteAverage;
+        this.vote_average = vote_average;
         this.title = title;
         this.popularity = popularity;
-        this.posterPath = posterPath;
-        this.originalLanguage = originalLanguage;
-        this.originalTitle = originalTitle;
-        this.genreIds = genreIds;
-        this.backdropPath = backdropPath;
+        this.poster_path = poster_path;
+        this.original_language = original_language;
+        this.original_title = original_title;
+        this.genre_ids = genre_ids;
+        this.backdrop_path = backdrop_path;
         this.adult = adult;
         this.overview = overview;
-        this.releaseDate = releaseDate;
+        this.release_date = release_date;
     }
 
     public void setVoteCount(int newVoteCount){
-        this.voteCount = voteCount;
+        this.vote_count = vote_count;
     }
 
     public int getVoteCount(){
-        return voteCount;
+        return vote_count;
     }
 
     public void setId(int newId){
@@ -80,11 +80,11 @@ public class MovieObject {
     }
 
     public void setVoteAverage(int newAverage){
-        this.voteAverage = voteAverage;
+        this.vote_average = vote_average;
     }
 
     public float getVoteAverage(){
-        return voteAverage;
+        return vote_average;
     }
 
     public void setTitle(String newTitle){
@@ -104,43 +104,43 @@ public class MovieObject {
     }
 
     public void setPosterPath(String newPosterPath){
-        this.posterPath = posterPath;
+        this.poster_path = poster_path;
     }
 
     public String getPosterPath(){
-        return posterPath;
+        return poster_path;
     }
 
     public void setOriginalLanguage(String newOriginalLanguage){
-        this.originalLanguage = originalLanguage;
+        this.original_language = original_language;
     }
 
     public String getOriginalLanguage(){
-        return originalLanguage;
+        return original_language;
     }
 
     public void setOriginalTitle(String newOriginalTitle){
-        this.originalTitle = originalTitle;
+        this.original_title = original_title;
     }
 
     public String getOriginalTitle(){
-        return originalTitle;
+        return original_title;
     }
 
     public void setGenreIds(int[] newGenreIds){
-        this.genreIds = genreIds;
+        this.genre_ids = genre_ids;
     }
 
     public int[] getGenreids(){
-        return genreIds;
+        return genre_ids;
     }
 
     public void setBackdropPath(String newBackdropPath){
-        this.backdropPath = backdropPath;
+        this.backdrop_path = backdrop_path;
     }
 
     public String getBackdropPath(){
-        return backdropPath;
+        return backdrop_path;
     }
 
     public void setAdult(boolean newAdult){
@@ -160,10 +160,10 @@ public class MovieObject {
     }
 
     public void setReleaseDate(String newReleaseDate){
-        this.releaseDate = releaseDate;
+        this.release_date = release_date;
     }
 
     public String getReleaseDate(){
-        return releaseDate;
+        return release_date;
     }
 }
