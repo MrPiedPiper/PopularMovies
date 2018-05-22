@@ -1,6 +1,5 @@
 package com.fancystachestudios.popularmovies.popularmovies.Utils;
 
-import android.graphics.Movie;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -16,7 +15,6 @@ import com.fancystachestudios.popularmovies.popularmovies.R;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by napuk on 5/20/2018.
@@ -45,7 +43,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.test_text_view, parent, false);
+                .inflate(R.layout.item_movie, parent, false);
 
         ViewHolder vh = new ViewHolder(v);
         return vh;
