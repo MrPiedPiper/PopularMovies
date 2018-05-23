@@ -102,7 +102,10 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int itemId = item.getItemId();
-        return super.onOptionsItemSelected(item);
+        if(itemId == R.id.main_menu_refresh){
+            new loadMovies().execute();
+        }
+        return true;
     }
 
     public void refreshMovies(ArrayList<MovieObject> movies){

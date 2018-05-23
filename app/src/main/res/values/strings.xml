@@ -3,7 +3,8 @@
 
     <string name="detail_intent_tag">DetailIntentObject</string>
 
-    <string name="main_menu_sorting_spinner">DetailIntentObject</string>
+    <string name="main_menu_sorting_spinner">Sort</string>
+    <string name="main_menu_refresh">Refresh</string>
 
     <string-array name="main_menu_sorting_spinner_array">
         <item>Popularity</item>
