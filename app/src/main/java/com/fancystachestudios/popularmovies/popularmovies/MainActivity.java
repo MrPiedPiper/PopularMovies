@@ -1,12 +1,17 @@
 package com.fancystachestudios.popularmovies.popularmovies;
 
+import android.support.v4.app.LoaderManager;
+import android.content.AsyncTaskLoader;
 import android.content.Context;
 import android.content.Intent;
+import android.content.Loader;
+import android.graphics.Movie;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -30,15 +35,26 @@ import butterknife.ButterKnife;
 
 /**
  * Main class for the MainActivity
+ * Loader implemented with help from Udacity "Android Developer Nanodegree Program" Lesson 7: "Lifecycle" Part 16: "Leveraging Loaders" (Credit to the "The Android Open Source Project")
  */
 
-public class MainActivity extends AppCompatActivity implements MovieAdapter.MovieClickListener{
+public class MainActivity extends AppCompatActivity
+        implements
+            MovieAdapter.MovieClickListener,
+            LoaderManager.LoaderCallbacks<ArrayList<MovieObject>>{
 
     //Prepare RecyclerView variables
     @BindView(R.id.mainRecyclerView) RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
     MovieAdapter.MovieClickListener movieClickListener;
     private RecyclerView.LayoutManager mLayoutManager;
+
+    //Constant to save and restore URL being queried by the Loader
+    private static final String SEARCH_QUERY_URL = "query";
+    //themoviedb Loader ID
+    private static final int THEMOVIEDB_LOADER_ID = 22;
+    //Current query URL
+    URL currentQuery = null;
 
     //Get access to utility class
     NetworkUtils networkUtils = new NetworkUtils();
@@ -63,7 +79,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         ButterKnife.bind(this);
 
         //Set up RecyclerView
-        mRecyclerView.setHasFixedSize(true);
+        //mRecyclerView.setHasFixedSize(true);
         mLayoutManager = new GridLayoutManager(this, 3);
         mRecyclerView.setLayoutManager(mLayoutManager);
         movieClickListener = this;
@@ -121,7 +137,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         int itemId = item.getItemId();
         //If it's the refresh button, call the reload function
         if(itemId == R.id.main_menu_refresh){
-            new loadMovies().execute();
+            loadMovies();
         }
         return true;
     }
@@ -129,7 +145,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
     //Function refreshes the list
     public void refreshMovies(ArrayList<MovieObject> movies){
         //If there's no movies in the ArrayList show error message to the user
-        if(movies.size() == 0) {
+        if(movies == null || movies.size() == 0) {
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
@@ -174,7 +190,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         //Set the sort to Popularity
         currListSort = MovieAPIManager.POPULARITY;
         //Refresh the movies
-        new loadMovies().execute();
+        loadMovies();
     }
 
     //Function sets the sort to top rated movies, and refreshes the movies
@@ -182,37 +198,81 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         //Set the sort to Rating
         currListSort = MovieAPIManager.RATING;
         //Refresh the movies
-        new loadMovies().execute();
+        loadMovies();
     }
 
-    //AsyncTask refreshes the movies
-    public class loadMovies extends AsyncTask<Void, Void, Void> {
+    private void loadMovies(){
 
-        @Override
-        protected Void doInBackground(Void... voids) {
-            //Get the URL to the movies
-            URL movieSearchUrl = null;
-            try {
-                movieSearchUrl = new URL(MovieAPIManager.PART1 + currListSort + MovieAPIManager.PART3 + MovieAPIManager.KEY);
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-            }
-            //Set the movie ArrayList
-            ArrayList<MovieObject> movies = new ArrayList<>();
-            try {
-                movies = networkUtils.getMoviesFromUrl(movieSearchUrl);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            //Refresh the movies
-            refreshMovies(movies);
-            return null;
+        //Get the URL
+        URL movieSearchUrl = null;
+        try {
+            movieSearchUrl = new URL(MovieAPIManager.PART1 + currListSort + MovieAPIManager.PART3 + MovieAPIManager.KEY);
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
         }
+        //Create a Bundle for the Loader
+        Bundle queryBundle = new Bundle();
+        //Insert a String
+        queryBundle.putString(SEARCH_QUERY_URL, movieSearchUrl.toString());
 
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            super.onPostExecute(aVoid);
+        //Get the LoaderManager
+        LoaderManager loaderManager = getSupportLoaderManager();
+        //Get the Loader by ID
+        android.support.v4.content.Loader<ArrayList<MovieObject>> movieLoader = loaderManager.getLoader(THEMOVIEDB_LOADER_ID);
+        if(movieLoader == null){
+            //If it's not there, make it.
+            loaderManager.initLoader(THEMOVIEDB_LOADER_ID, queryBundle, this).forceLoad();
+        }else{
+            //If it's there, restart it.
+            loaderManager.restartLoader(THEMOVIEDB_LOADER_ID, queryBundle, this).forceLoad();
         }
     }
+
+    @Override
+    public android.support.v4.content.Loader<ArrayList<MovieObject>> onCreateLoader(int i, final Bundle args) {
+        return new android.support.v4.content.AsyncTaskLoader<ArrayList<MovieObject>>(this) {
+            @Override
+            protected void onStartLoading() {
+                super.onStartLoading();
+                if(args == null){
+                    return;
+                }
+                //TODO add loading gif
+            }
+
+            @Override
+            public ArrayList<MovieObject> loadInBackground() {
+                //Get the URL to the movies
+                String movieSearchString = args.getString(SEARCH_QUERY_URL);
+                //Set the movie ArrayList
+                ArrayList<MovieObject> movies = new ArrayList<>();
+                try {
+                    //Convert the String into a URL
+                    URL movieSearchUrl = new URL(movieSearchString);
+                    //Get the movies and set the movies varaible
+                    movies = networkUtils.getMoviesFromUrl(movieSearchUrl);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    return null;
+                }
+                //Return movies
+                return movies;
+            }
+
+        };
+    }
+
+    @Override
+    public void onLoadFinished(android.support.v4.content.Loader<ArrayList<MovieObject>> loader, ArrayList<MovieObject> mMovieList) {
+        //Refresh the movies
+        refreshMovies(mMovieList);
+        //TODO loading GIF
+    }
+
+    @Override
+    public void onLoaderReset(android.support.v4.content.Loader<ArrayList<MovieObject>> loader) {
+
+    }
+
 
 }
