@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <!--Instructions on how to implement a spinner found at https://www.viralandroid.com/2016/03/how-to-add-spinner-dropdown-list-to-android-actionbar-toolbar.html-->
+    <item
+        android:id="@+id/main_menu_spinner"
+        android:title="@string/main_menu_sorting_spinner"
+        app:actionViewClass="android.widget.Spinner"
+        app:showAsAction="always"/>
+
+</menu>

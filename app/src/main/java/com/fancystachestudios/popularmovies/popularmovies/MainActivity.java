@@ -7,21 +7,20 @@ import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.widget.Toast;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 
 import com.fancystachestudios.popularmovies.popularmovies.MovieAPI.MovieObject;
 import com.fancystachestudios.popularmovies.popularmovies.Utils.CustomMovieList;
 import com.fancystachestudios.popularmovies.popularmovies.Utils.MovieAdapter;
 import com.fancystachestudios.popularmovies.popularmovies.Utils.NetworkUtils;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
-
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -57,6 +56,21 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         mRecyclerView.setAdapter(mAdapter);
 
         new myTest().execute();
+    }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+
+        MenuItem item = menu.findItem(R.id.main_menu_spinner);
+        Spinner spinner = (Spinner)item.getActionView();
+
+        ArrayAdapter<CharSequence> spinnerAdapter = ArrayAdapter.createFromResource(this,
+                R.array.main_menu_sorting_spinner_array,
+                R.layout.custom_spinner_text);
+        spinnerAdapter.setDropDownViewResource(R.layout.custom_spinner_text);
+
+        spinner.setAdapter(spinnerAdapter);
+        return true;
     }
 
     private class myTest extends AsyncTask<Void, Void, Void>{

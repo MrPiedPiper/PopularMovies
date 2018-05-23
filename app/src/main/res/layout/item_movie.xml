@@ -8,7 +8,6 @@
     android:background="@color/colorPrimaryDark">
 
     <ImageView
-        android:alpha="0.75"
         android:id="@+id/item_background_image"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

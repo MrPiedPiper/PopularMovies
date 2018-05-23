@@ -4,4 +4,6 @@
     <color name="colorPrimary">#383838</color>
     <color name="colorPrimaryDark">#292929</color>
     <color name="colorAccent">#7d0006</color>
+
+    <color name="textviewTextColor">#FFF</color>
 </resources>

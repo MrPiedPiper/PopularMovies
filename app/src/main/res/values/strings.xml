@@ -2,4 +2,12 @@
     <string name="app_name">PopularMovies</string>
 
     <string name="detail_intent_tag">DetailIntentObject</string>
+
+    <string name="main_menu_sorting_spinner">DetailIntentObject</string>
+
+    <string-array name="main_menu_sorting_spinner_array">
+        <item>Popularity</item>
+        <item>Rating</item>
+    </string-array>
+
 </resources>
