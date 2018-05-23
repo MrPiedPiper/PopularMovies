@@ -3,11 +3,12 @@ package com.fancystachestudios.popularmovies.popularmovies.MovieAPI;
 import java.io.Serializable;
 
 /**
- * MovieObject class is a template for the MovieObject
+ * Custom Class for storing movie data
  */
 
 public class MovieObject implements Serializable {
 
+    //Create all necessary variables
     private int vote_count;
     private int id;
     private boolean video;
@@ -56,6 +57,8 @@ public class MovieObject implements Serializable {
         this.overview = overview;
         this.release_date = release_date;
     }
+
+    //Set all of the getters and setters
 
     public void setVoteCount(int newVoteCount){
         this.vote_count = vote_count;

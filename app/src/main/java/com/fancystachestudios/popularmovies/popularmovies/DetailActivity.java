@@ -17,13 +17,13 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
- * Created by napuk on 5/22/2018.
+ * Main class for the DetailActivity
  */
 
 public class DetailActivity extends AppCompatActivity {
 
+    //Get all of the necessary Views
     @BindView(R.id.detail_backdrop)ImageView backdropImageView;
-
     @BindView(R.id.detail_votes)TextView voteCountTextView;
     @BindView(R.id.detail_stars)RatingBar voteAverageRatingBar;
     @BindView(R.id.detail_title)TextView titleTextView;
@@ -31,7 +31,7 @@ public class DetailActivity extends AppCompatActivity {
     @BindView(R.id.detail_overview)TextView overviewTextView;
     @BindView(R.id.detail_release_date)TextView releaseDateTextView;
 
-
+    //Get access to the movieAPIManager
     MovieAPIManager movieAPIManager = new MovieAPIManager();
 
     @Override
@@ -40,9 +40,17 @@ public class DetailActivity extends AppCompatActivity {
         setContentView(R.layout.activity_detail);
         ButterKnife.bind(this);
 
+        //Retrieve the movie selected to open the DetailActivity
         Intent intent = getIntent();
         MovieObject movie = (MovieObject) intent.getSerializableExtra(getString(R.string.detail_intent_tag));
 
+        //Set the views to the data from the movie
+        setViewsWithMovie(movie);
+    }
+
+    //Function sets the attributes of the Views based on the MovieObject
+    private void setViewsWithMovie(MovieObject movie){
+        //Load all of the data from the movie object and set View data accordingly
         Picasso.get().load(movieAPIManager.getBackdropPath(movie)).into(backdropImageView);
         Log.d("myBackdropTest", movieAPIManager.getBackdropPath(movie));
         voteCountTextView.setText(String.valueOf(movie.getVoteCount()));

@@ -1,11 +1,17 @@
 <resources>
     <string name="app_name">PopularMovies</string>
 
+    <!--Tag used to carry the MovieObject between the MainActivity and the DetailActivity-->
     <string name="detail_intent_tag">DetailIntentObject</string>
 
-    <string name="main_menu_sorting_spinner">Sort</string>
-    <string name="main_menu_refresh">Refresh</string>
 
+    <!--MainActivity Toolbar items-->
+
+    <!--Title for the MainActivity Toolbar sort Spinner-->
+    <string name="main_menu_sorting_spinner">Sort</string>
+    <!--Title for the MainActivity Toolbar refresh Button-->
+    <string name="main_menu_refresh">Refresh</string>
+    <!--Items for the MainActivity Toolbar sort Spinner-->
     <string-array name="main_menu_sorting_spinner_array">
         <item>Popularity</item>
         <item>Rating</item>
