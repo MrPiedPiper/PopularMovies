@@ -43,6 +43,7 @@ public class DetailActivity extends AppCompatActivity {
         MovieObject movie = (MovieObject) intent.getSerializableExtra(getString(R.string.detail_intent_tag));
 
         Picasso.get().load(movieAPIManager.getBackdropPath(movie)).into(backdropImageView);
+        Log.d("myBackdropTest", movieAPIManager.getBackdropPath(movie));
         voteCountTextView.setText(String.valueOf(movie.getVoteCount()));
         voteAverageRatingBar.setRating(movie.getVoteAverage()/2);
         titleTextView.setText(movie.getTitle());

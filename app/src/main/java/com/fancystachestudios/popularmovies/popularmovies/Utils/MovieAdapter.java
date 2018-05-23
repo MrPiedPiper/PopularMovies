@@ -69,7 +69,6 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
 
         String posterPath = movieAPIManager.getPosterPath(mDataset.get(position));
         Picasso.get().load(posterPath).into(holder.mImageView);
-        Log.d("mytest", posterPath);
         holder.mTextView.setText(String.valueOf(position));
     }
 
