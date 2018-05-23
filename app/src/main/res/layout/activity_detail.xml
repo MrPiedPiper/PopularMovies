@@ -9,6 +9,7 @@
     android:background="@color/colorPrimary">
 
     <ImageView
+        android:alpha="0.50"
         tool:minHeight="200dp"
         android:id="@+id/detail_backdrop"
         android:layout_width="match_parent"
@@ -24,7 +25,7 @@
         android:layout_height="0dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="80dp"
+        android:layout_marginTop="112dp"
         android:background="@color/colorPrimaryDark"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -35,56 +36,54 @@
         app:layout_editor_absoluteX="200dp"
         app:layout_editor_absoluteY="200dp" />
 
-    <android.support.constraint.ConstraintLayout
-        android:id="@+id/detail_header_layout"
+    <View
+        android:id="@+id/detail_header_view"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:background="@color/colorPrimary"
-        android:padding="8dp"
+        android:minHeight="64dp"
+        app:layout_constraintBottom_toBottomOf="@+id/detail_votes"
         app:layout_constraintEnd_toEndOf="@+id/view"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/view"
         app:layout_constraintTop_toTopOf="@+id/view"
-        app:layout_editor_absoluteX="200dp"
-        app:layout_editor_absoluteY="200dp">
+        app:layout_constraintVertical_bias="0.0" />
 
+    <RatingBar
+        android:id="@+id/detail_stars"
+        style="@style/Base.Widget.AppCompat.RatingBar.Small"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:background="@color/colorPrimaryLight"
+        android:numStars="5"
+        app:layout_constraintStart_toStartOf="@+id/detail_title"
+        app:layout_constraintTop_toBottomOf="@+id/detail_title" />
 
-        <RatingBar
-            android:id="@+id/detail_stars"
-            style="@style/Base.Widget.AppCompat.RatingBar.Small"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:background="@color/colorPrimaryLight"
-            android:numStars="5"
-            app:layout_constraintBottom_toBottomOf="@+id/detail_title"
-            app:layout_constraintEnd_toStartOf="@+id/detail_votes"
-            app:layout_constraintTop_toTopOf="parent" />
+    <TextView
+        android:id="@+id/detail_votes"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:paddingBottom="8dp"
+        android:paddingTop="8dp"
+        android:textColor="#FFF"
+        app:layout_constraintBottom_toBottomOf="@+id/detail_stars"
+        app:layout_constraintStart_toEndOf="@+id/detail_stars"
+        app:layout_constraintTop_toTopOf="@+id/detail_stars"
 
-        <TextView
-            android:textColor="#FFF"
-            android:id="@+id/detail_votes"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:layout_marginTop="8dp"
-            app:layout_constraintBottom_toBottomOf="@+id/detail_title"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/detail_title"
-            app:layout_constraintVertical_bias="1.0"
-            tool:text="votes" />
+        tool:text="votes" />
 
-        <TextView
-            android:id="@+id/detail_title"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:textColor="#FFF"
-            app:layout_constraintEnd_toStartOf="@+id/detail_stars"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tool:text="title" />
-
-    </android.support.constraint.ConstraintLayout>
+    <TextView
+        android:id="@+id/detail_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:padding="8dp"
+        android:textColor="#FFF"
+        app:layout_constraintEnd_toStartOf="@+id/detail_poster_imageview"
+        app:layout_constraintStart_toStartOf="@+id/view"
+        app:layout_constraintTop_toTopOf="@id/view"
+        tool:text="title" />
 
     <TextView
         android:id="@+id/detail_overview"
@@ -96,7 +95,7 @@
         android:textColor="#FFF"
         app:layout_constraintEnd_toEndOf="@+id/view"
         app:layout_constraintStart_toStartOf="@+id/view"
-        app:layout_constraintTop_toBottomOf="@+id/detail_header_layout"
+        app:layout_constraintTop_toBottomOf="@+id/detail_header_view"
         tool:text="overview" />
 
     <TextView
@@ -109,5 +108,19 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="@+id/view"
         tool:text="release date" />
+
+    <ImageView
+        android:id="@+id/detail_poster_imageview"
+        android:layout_width="64dp"
+        android:layout_height="0dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="72dp"
+        android:adjustViewBounds="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.888"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tool:background="@drawable/ic_launcher_foreground" />
 
 </android.support.constraint.ConstraintLayout>
