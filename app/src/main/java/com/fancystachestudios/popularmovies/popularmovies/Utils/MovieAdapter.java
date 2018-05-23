@@ -24,7 +24,9 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
     private ArrayList<MovieObject> mDataset;
     private MovieAPIManager movieAPIManager = new MovieAPIManager();
 
-    public static class ViewHolder extends  RecyclerView.ViewHolder{
+    final private MovieClickListener mMovieClickListener;
+
+    public class ViewHolder extends  RecyclerView.ViewHolder implements View.OnClickListener{
         public TextView mTextView;
         public ConstraintLayout mLayout;
         public ImageView mImageView;
@@ -33,11 +35,24 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
             mLayout = v.findViewById(R.id.item_root_layout);
             mTextView = v.findViewById(R.id.item_list_number_text);
             mImageView = v.findViewById(R.id.item_background_image);
+
+            v.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View view) {
+            int clickedPosition = getAdapterPosition();
+            mMovieClickListener.onMovieClick(clickedPosition);
         }
     }
 
-    public MovieAdapter(ArrayList<MovieObject> myDataSet){
+    public interface MovieClickListener{
+        void onMovieClick(int clickedItemIndex);
+    }
+
+    public MovieAdapter(ArrayList<MovieObject> myDataSet, MovieClickListener listener){
         mDataset = myDataSet;
+        mMovieClickListener = listener;
     }
 
     @Override
@@ -67,4 +82,6 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
         mDataset = newMovies;
         notifyDataSetChanged();
     }
+
+
 }

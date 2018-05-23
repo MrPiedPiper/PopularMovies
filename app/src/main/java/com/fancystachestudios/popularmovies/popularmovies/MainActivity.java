@@ -1,5 +1,6 @@
 package com.fancystachestudios.popularmovies.popularmovies;
 
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -25,7 +26,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements MovieAdapter.MovieClickListener{
     @BindView(R.id.mainRecyclerView) RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
@@ -35,6 +36,8 @@ public class MainActivity extends AppCompatActivity {
 
 
     ArrayList<MovieObject> movieArray;
+
+    MovieAdapter.MovieClickListener movieClickListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,7 +52,8 @@ public class MainActivity extends AppCompatActivity {
         mLayoutManager = new GridLayoutManager(this, 3);
         mRecyclerView.setLayoutManager(mLayoutManager);
 
-        mAdapter = new MovieAdapter(movieArray);
+        movieClickListener = this;
+        mAdapter = new MovieAdapter(movieArray, movieClickListener);
         mRecyclerView.setAdapter(mAdapter);
 
         new myTest().execute();
@@ -95,11 +99,19 @@ public class MainActivity extends AppCompatActivity {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                RecyclerView.Adapter newAdapter = new MovieAdapter(movieArray);
+                RecyclerView.Adapter newAdapter = new MovieAdapter(movieArray, movieClickListener);
                 mRecyclerView.swapAdapter(newAdapter, true);
                 mAdapter.notifyDataSetChanged();
             }
         });
         //Toast.makeText(this, testString, Toast.LENGTH_SHORT);
+    }
+
+    @Override
+    public void onMovieClick(int clickedItemIndex) {
+        //TODO Change this out for DB
+        Intent intent = new Intent(this, DetailActivity.class);
+        intent.putExtra(getString(R.string.detail_intent_tag), movieArray.get(clickedItemIndex));
+        startActivity(intent);
     }
 }

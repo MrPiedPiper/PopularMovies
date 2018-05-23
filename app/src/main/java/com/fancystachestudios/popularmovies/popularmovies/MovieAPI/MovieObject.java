@@ -1,10 +1,12 @@
 package com.fancystachestudios.popularmovies.popularmovies.MovieAPI;
 
+import java.io.Serializable;
+
 /**
  * MovieObject class is a template for the MovieObject
  */
 
-public class MovieObject {
+public class MovieObject implements Serializable {
 
     private int vote_count;
     private int id;
