@@ -1,5 +1,6 @@
 package com.fancystachestudios.popularmovies.popularmovies;
 
+import android.annotation.SuppressLint;
 import android.support.v4.app.LoaderManager;
 import android.content.AsyncTaskLoader;
 import android.content.Context;
@@ -29,6 +30,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -58,6 +60,8 @@ public class MainActivity extends AppCompatActivity
 
     //Get access to utility class
     NetworkUtils networkUtils = new NetworkUtils();
+    //get access to the MovieAPIManager class
+    MovieAPIManager movieAPIManager = new MovieAPIManager();
 
     //Set default sort
     String currListSort = MovieAPIManager.POPULARITY;
@@ -204,16 +208,14 @@ public class MainActivity extends AppCompatActivity
     private void loadMovies(){
 
         //Get the URL
-        URL movieSearchUrl = null;
-        try {
-            movieSearchUrl = new URL(MovieAPIManager.PART1 + currListSort + MovieAPIManager.PART3 + MovieAPIManager.KEY);
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
+        ArrayList<String> movieSearchList = new ArrayList<>();
+        for(int i=0; i<10; i++){
+            movieSearchList.add(movieAPIManager.getPathToMoviePage(currListSort, i+1));
         }
         //Create a Bundle for the Loader
         Bundle queryBundle = new Bundle();
         //Insert a String
-        queryBundle.putString(SEARCH_QUERY_URL, movieSearchUrl.toString());
+        queryBundle.putStringArrayList(SEARCH_QUERY_URL, movieSearchList);
 
         //Get the LoaderManager
         LoaderManager loaderManager = getSupportLoaderManager();
@@ -228,6 +230,7 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+    @SuppressLint("StaticFieldLeak")
     @Override
     public android.support.v4.content.Loader<ArrayList<MovieObject>> onCreateLoader(int i, final Bundle args) {
         return new android.support.v4.content.AsyncTaskLoader<ArrayList<MovieObject>>(this) {
@@ -243,17 +246,25 @@ public class MainActivity extends AppCompatActivity
             @Override
             public ArrayList<MovieObject> loadInBackground() {
                 //Get the URL to the movies
-                String movieSearchString = args.getString(SEARCH_QUERY_URL);
+                ArrayList<String> movieSearchArrayList = args.getStringArrayList(SEARCH_QUERY_URL);
                 //Set the movie ArrayList
                 ArrayList<MovieObject> movies = new ArrayList<>();
-                try {
-                    //Convert the String into a URL
-                    URL movieSearchUrl = new URL(movieSearchString);
-                    //Get the movies and set the movies varaible
-                    movies = networkUtils.getMoviesFromUrl(movieSearchUrl);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    return null;
+                ArrayList<MovieObject> currPage = new ArrayList<>();
+                for(int i=0; i<movieSearchArrayList.size(); i++){
+                    try {
+                        //Convert the String into a URL
+                        URL movieSearchUrl = new URL(movieSearchArrayList.get(i));
+                        //Get the movies and set the movies variable
+                        currPage = networkUtils.getMoviesFromUrl(movieSearchUrl);
+                        for(int j=0; j<currPage.size(); j++){
+                            movies.add(currPage.get(j));
+                            Log.d("mytest", "This is " + currPage.get(j));
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        return null;
+                    }
+                    Log.d("mytest", "There are " + movies.size() + " movies");
                 }
                 //Return movies
                 return movies;
