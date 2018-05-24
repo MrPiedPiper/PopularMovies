@@ -11,7 +11,8 @@
     tools:context="com.fancystachestudios.popularmovies.popularmovies.MainActivity"
     android:id="@+id/mainRecyclerView"
     android:scrollbars="vertical"
-    android:background="@color/colorPrimaryDark">
+    android:background="@color/colorPrimaryDark"
+    android:padding="1dp">
 
 
 
