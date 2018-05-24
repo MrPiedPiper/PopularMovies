@@ -125,9 +125,15 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
         return mDataset.size();
     }
 
-    //I can't call this for some reason. :/
+    //Updates the list
     public void updateList(ArrayList<MovieObject> newMovies){
         mDataset = newMovies;
+        notifyDataSetChanged();
+    }
+
+    //Resets the list
+    public void resetList(){
+        mDataset.clear();
         notifyDataSetChanged();
     }
 

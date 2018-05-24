@@ -163,6 +163,7 @@ public class MainActivity extends AppCompatActivity
     //Function refreshes the list
     public void refreshMovies(){
         //Reset the movies, and load some new ones
+        mAdapter.resetList();
         movieArray.clear();
         scrollListener.resetState();
         currPage = 0;

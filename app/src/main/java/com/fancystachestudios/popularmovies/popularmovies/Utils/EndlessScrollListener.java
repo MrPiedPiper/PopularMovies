@@ -14,7 +14,7 @@ import android.widget.AbsListView;
 
 public abstract class EndlessScrollListener extends android.support.v7.widget.RecyclerView.OnScrollListener{
     //Minimum amount of items below current scroll before loading more
-    private int visibleThreshold = 2;
+    private int visibleThreshold = 20;
     //Current offset
     private int currentPage = 0;
     //Total count of items from the last load
