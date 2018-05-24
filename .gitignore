@@ -1,10 +1,1 @@
-*.iml
-.gradle
-/local.properties
-/.idea/workspace.xml
-/.idea/libraries
-.DS_Store
-/build
-/captures
-.externalNativeBuild
-app/src/main/java/com/fancystachestudios/popularmovies/popularmovies/MovieAPI/MovieAPIManager.java
+*.java filter=gitignore
