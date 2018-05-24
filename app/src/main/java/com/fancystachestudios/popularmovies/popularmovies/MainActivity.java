@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -18,6 +19,7 @@ import android.widget.Toast;
 
 import com.fancystachestudios.popularmovies.popularmovies.MovieAPI.MovieAPIManager;
 import com.fancystachestudios.popularmovies.popularmovies.MovieAPI.MovieObject;
+import com.fancystachestudios.popularmovies.popularmovies.Utils.EndlessScrollListener;
 import com.fancystachestudios.popularmovies.popularmovies.Utils.MovieAdapter;
 import com.fancystachestudios.popularmovies.popularmovies.Utils.NetworkUtils;
 
@@ -47,6 +49,7 @@ public class MainActivity extends AppCompatActivity
     private MovieAdapter mAdapter;
     MovieAdapter.MovieClickListener movieClickListener;
     GridLayoutManager mLayoutManager;
+    EndlessScrollListener mScrollListener;
 
     //Constant to save and restore URL being queried by the Loader
     private static final String SEARCH_QUERY_URL = "query";
@@ -88,6 +91,13 @@ public class MainActivity extends AppCompatActivity
         movieClickListener = this;
         mAdapter = new MovieAdapter(this, movieArray, movieClickListener);
         mRecyclerView.setAdapter(mAdapter);
+        mScrollListener = new EndlessScrollListener(mLayoutManager) {
+            @Override
+            protected void onScroll() {
+                loadMovies();
+            }
+        };
+        mRecyclerView.addOnScrollListener(mScrollListener);
 
         //Load the movies
         loadPopularMovies();
@@ -148,8 +158,10 @@ public class MainActivity extends AppCompatActivity
     //Function refreshes the list
     public void refreshMovies(){
         //Reset the movies, and load some new ones
+        currPage = 0;
         mAdapter.resetList();
         movieArray.clear();
+        mScrollListener.resetScroll();
         loadMovies();
     }
 
@@ -180,6 +192,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void loadMovies(){
+        currPage++;
         //Get the URL
         ArrayList<String> movieSearchList = new ArrayList<>();
         //Get the next page
@@ -227,6 +240,7 @@ public class MainActivity extends AppCompatActivity
                         URL movieSearchUrl = new URL(movieSearchArrayList.get(i));
                         //Get the movies
                         currPage = networkUtils.getMoviesFromUrl(movieSearchUrl);
+                        Log.d("myeteste", String.valueOf(currPage.size()));
                         //Set the movie variable
                         movies.addAll(currPage);
                     } catch (IOException e) {
