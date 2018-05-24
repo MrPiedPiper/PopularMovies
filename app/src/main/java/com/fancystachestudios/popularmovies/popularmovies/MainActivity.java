@@ -155,7 +155,7 @@ public class MainActivity extends AppCompatActivity
         int itemId = item.getItemId();
         //If it's the refresh button, call the reload function
         if(itemId == R.id.main_menu_refresh){
-            loadMovies();
+            refreshMovies();
         }
         return true;
     }

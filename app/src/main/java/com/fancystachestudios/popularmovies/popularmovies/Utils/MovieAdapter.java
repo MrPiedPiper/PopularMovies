@@ -96,6 +96,8 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
         holder.mLoadImageView.startAnimation(anim);
         //Get the poster path
         String posterPath = movieAPIManager.getPosterPath(mDataset.get(position));
+        //Set the content description
+        holder.mImageView.setContentDescription(mDataset.get(position).getTitle());
 
         //Use Picasso to load the image into the ImageView
         Picasso.get().load(posterPath).into(holder.mImageView, new com.squareup.picasso.Callback(){
