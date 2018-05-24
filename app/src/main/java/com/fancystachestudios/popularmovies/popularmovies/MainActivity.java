@@ -23,6 +23,7 @@ import android.widget.Toast;
 
 import com.fancystachestudios.popularmovies.popularmovies.MovieAPI.MovieAPIManager;
 import com.fancystachestudios.popularmovies.popularmovies.MovieAPI.MovieObject;
+import com.fancystachestudios.popularmovies.popularmovies.Utils.EndlessScrollListener;
 import com.fancystachestudios.popularmovies.popularmovies.Utils.MovieAdapter;
 import com.fancystachestudios.popularmovies.popularmovies.Utils.NetworkUtils;
 
@@ -47,9 +48,9 @@ public class MainActivity extends AppCompatActivity
 
     //Prepare RecyclerView variables
     @BindView(R.id.mainRecyclerView) RecyclerView mRecyclerView;
-    private RecyclerView.Adapter mAdapter;
+    private MovieAdapter mAdapter;
     MovieAdapter.MovieClickListener movieClickListener;
-    private RecyclerView.LayoutManager mLayoutManager;
+    private GridLayoutManager mLayoutManager;
 
     //Constant to save and restore URL being queried by the Loader
     private static final String SEARCH_QUERY_URL = "query";
@@ -75,6 +76,11 @@ public class MainActivity extends AppCompatActivity
     //Create general use Context
     Context mainActivityContext = this;
 
+    //Current page
+    int currPage;
+    //Create an endless scroll listener
+    private EndlessScrollListener scrollListener;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,9 +89,17 @@ public class MainActivity extends AppCompatActivity
         ButterKnife.bind(this);
 
         //Set up RecyclerView
-        //mRecyclerView.setHasFixedSize(true);
         mLayoutManager = new GridLayoutManager(this, 3);
         mRecyclerView.setLayoutManager(mLayoutManager);
+
+        scrollListener = new EndlessScrollListener(mLayoutManager) {
+            @Override
+            public boolean onLoadMore(int page, int totalitemsCount) {
+                loadMovies();
+                return true;
+            }
+        };
+        mRecyclerView.addOnScrollListener(scrollListener);
         movieClickListener = this;
         mAdapter = new MovieAdapter(this, movieArray, movieClickListener);
         mRecyclerView.setAdapter(mAdapter);
@@ -147,36 +161,12 @@ public class MainActivity extends AppCompatActivity
     }
 
     //Function refreshes the list
-    public void refreshMovies(ArrayList<MovieObject> movies){
-        //If there's no movies in the ArrayList show error message to the user
-        if(movies == null || movies.size() == 0) {
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    if(generalToast != null) {
-                        generalToast.cancel();
-                    }
-                    generalToast = Toast.makeText(
-                            mainActivityContext,
-                            "There's no movies. \n" +
-                                    "Maybe check your connection?",
-                            Toast.LENGTH_LONG);
-                    generalToast.show();
-                    }
-            });
-            return;
-        }
-        //Set the movieArray to the retrieved movies
-        movieArray = movies;
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                //Create a new Adapter
-                RecyclerView.Adapter newAdapter = new MovieAdapter(mainActivityContext, movieArray, movieClickListener);
-                //Set the RecyclerView to use the Adapter
-                mRecyclerView.swapAdapter(newAdapter, true);
-            }
-        });
+    public void refreshMovies(){
+        //Reset the movies, and load some new ones
+        movieArray.clear();
+        scrollListener.resetState();
+        currPage = 0;
+        loadMovies();
     }
 
     @Override
@@ -194,7 +184,7 @@ public class MainActivity extends AppCompatActivity
         //Set the sort to Popularity
         currListSort = MovieAPIManager.POPULARITY;
         //Refresh the movies
-        loadMovies();
+        refreshMovies();
     }
 
     //Function sets the sort to top rated movies, and refreshes the movies
@@ -202,16 +192,16 @@ public class MainActivity extends AppCompatActivity
         //Set the sort to Rating
         currListSort = MovieAPIManager.RATING;
         //Refresh the movies
-        loadMovies();
+        refreshMovies();
     }
 
     private void loadMovies(){
+        currPage++;
 
         //Get the URL
         ArrayList<String> movieSearchList = new ArrayList<>();
-        for(int i=0; i<10; i++){
-            movieSearchList.add(movieAPIManager.getPathToMoviePage(currListSort, i+1));
-        }
+        //Get the next page
+        movieSearchList.add(movieAPIManager.getPathToMoviePage(currListSort, currPage));
         //Create a Bundle for the Loader
         Bundle queryBundle = new Bundle();
         //Insert a String
@@ -240,7 +230,6 @@ public class MainActivity extends AppCompatActivity
                 if(args == null){
                     return;
                 }
-                //TODO add loading_animation gif
             }
 
             @Override
@@ -273,9 +262,28 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onLoadFinished(android.support.v4.content.Loader<ArrayList<MovieObject>> loader, ArrayList<MovieObject> mMovieList) {
+        //If there's no movies in the ArrayList show error message to the user
+        if(mMovieList == null || mMovieList.size() == 0) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    if(generalToast != null) {
+                        generalToast.cancel();
+                    }
+                    generalToast = Toast.makeText(
+                            mainActivityContext,
+                            "There's no movies. \n" +
+                                    "Maybe check your connection?",
+                            Toast.LENGTH_LONG);
+                    generalToast.show();
+                }
+            });
+            return;
+        }
         //Refresh the movies
-        refreshMovies(mMovieList);
-        //TODO loading_animation GIF
+        //refreshMovies(mMovieList);
+        movieArray.addAll(mMovieList);
+        mAdapter.updateList(movieArray);
     }
 
     @Override
