@@ -12,6 +12,7 @@
     android:background="@color/colorPrimary">
 
     <ImageView
+        android:contentDescription="@string/main_recyclerview_placeholder_content_description"
         android:background="@drawable/placeholder"
         android:id="@+id/item_background_image"
         android:layout_width="match_parent"
@@ -28,6 +29,7 @@
         android:textColor="#FFF"/>
 
     <ImageView
+        android:contentDescription="@string/main_recyclerview_loading_content_description"
         android:id="@+id/loading_item"
         android:layout_width="72dp"
         android:layout_height="72dp"

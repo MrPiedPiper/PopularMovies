@@ -2,17 +2,12 @@ package com.fancystachestudios.popularmovies.popularmovies;
 
 import android.annotation.SuppressLint;
 import android.support.v4.app.LoaderManager;
-import android.content.AsyncTaskLoader;
 import android.content.Context;
 import android.content.Intent;
-import android.content.Loader;
-import android.graphics.Movie;
-import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -28,10 +23,8 @@ import com.fancystachestudios.popularmovies.popularmovies.Utils.MovieAdapter;
 import com.fancystachestudios.popularmovies.popularmovies.Utils.NetworkUtils;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -50,7 +43,7 @@ public class MainActivity extends AppCompatActivity
     @BindView(R.id.mainRecyclerView) RecyclerView mRecyclerView;
     private MovieAdapter mAdapter;
     MovieAdapter.MovieClickListener movieClickListener;
-    private GridLayoutManager mLayoutManager;
+    GridLayoutManager mLayoutManager;
 
     //Constant to save and restore URL being queried by the Loader
     private static final String SEARCH_QUERY_URL = "query";
@@ -229,7 +222,7 @@ public class MainActivity extends AppCompatActivity
             protected void onStartLoading() {
                 super.onStartLoading();
                 if(args == null){
-                    return;
+                    this.stopLoading();
                 }
             }
 
@@ -239,16 +232,15 @@ public class MainActivity extends AppCompatActivity
                 ArrayList<String> movieSearchArrayList = args.getStringArrayList(SEARCH_QUERY_URL);
                 //Set the movie ArrayList
                 ArrayList<MovieObject> movies = new ArrayList<>();
-                ArrayList<MovieObject> currPage = new ArrayList<>();
+                ArrayList<MovieObject> currPage;
                 for(int i=0; i<movieSearchArrayList.size(); i++){
                     try {
                         //Convert the String into a URL
                         URL movieSearchUrl = new URL(movieSearchArrayList.get(i));
-                        //Get the movies and set the movies variable
+                        //Get the movies
                         currPage = networkUtils.getMoviesFromUrl(movieSearchUrl);
-                        for(int j=0; j<currPage.size(); j++){
-                            movies.add(currPage.get(j));
-                        }
+                        //Set the movie variable
+                        movies.addAll(currPage);
                     } catch (IOException e) {
                         e.printStackTrace();
                         return null;

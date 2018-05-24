@@ -23,16 +23,16 @@ import butterknife.ButterKnife;
 public class DetailActivity extends AppCompatActivity {
 
     //Get all of the necessary Views
-    @BindView(R.id.detail_backdrop)ImageView backdropImageView;
-    @BindView(R.id.detail_votes)TextView voteCountTextView;
-    @BindView(R.id.detail_stars)RatingBar voteAverageRatingBar;
-    @BindView(R.id.detail_title)TextView titleTextView;
-    @BindView(R.id.detail_poster_imageview)ImageView posterImageView;
-    @BindView(R.id.detail_overview)TextView overviewTextView;
-    @BindView(R.id.detail_release_date)TextView releaseDateTextView;
+    private @BindView(R.id.detail_backdrop)ImageView backdropImageView;
+    private @BindView(R.id.detail_votes)TextView voteCountTextView;
+    private @BindView(R.id.detail_stars)RatingBar voteAverageRatingBar;
+    private @BindView(R.id.detail_title)TextView titleTextView;
+    private @BindView(R.id.detail_poster_imageview)ImageView posterImageView;
+    private @BindView(R.id.detail_overview)TextView overviewTextView;
+    private @BindView(R.id.detail_release_date)TextView releaseDateTextView;
 
     //Get access to the movieAPIManager
-    MovieAPIManager movieAPIManager = new MovieAPIManager();
+    private MovieAPIManager movieAPIManager = new MovieAPIManager();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {

@@ -1,11 +1,7 @@
 package com.fancystachestudios.popularmovies.popularmovies.Utils;
 
-import android.content.Context;
-import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 
-import com.fancystachestudios.popularmovies.popularmovies.MainActivity;
 import com.fancystachestudios.popularmovies.popularmovies.MovieAPI.MovieObject;
 import com.google.gson.Gson;
 
@@ -14,14 +10,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.List;
 
-import okhttp3.Call;
-import okhttp3.Callback;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -30,7 +21,7 @@ import okhttp3.Response;
  * Utility class for accessing the internet
  */
 
-public class NetworkUtils extends AppCompatActivity{
+public class NetworkUtils {
 
     /**
      * Function converts JSON String to a JSONObject

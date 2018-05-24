@@ -17,4 +17,16 @@
         <item>Rating</item>
     </string-array>
 
+
+    <!--DetailActivity Strings-->
+
+    <!--Content Descriptions for the ImageViews-->
+    <string name="backdrop_content_description">movie backdrop</string>
+    <string name="detail_poster_content_description">movie poster</string>
+
+
+    <!--MainActivity RecyclerView item strings-->
+    <string name="main_recyclerview_placeholder_content_description">placeholder image</string>
+    <string name="main_recyclerview_loading_content_description">loading image</string>
+
 </resources>
