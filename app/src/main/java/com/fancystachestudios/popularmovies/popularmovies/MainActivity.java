@@ -18,7 +18,6 @@ import android.widget.Toast;
 
 import com.fancystachestudios.popularmovies.popularmovies.MovieAPI.MovieAPIManager;
 import com.fancystachestudios.popularmovies.popularmovies.MovieAPI.MovieObject;
-import com.fancystachestudios.popularmovies.popularmovies.Utils.EndlessScrollListener;
 import com.fancystachestudios.popularmovies.popularmovies.Utils.MovieAdapter;
 import com.fancystachestudios.popularmovies.popularmovies.Utils.NetworkUtils;
 
@@ -74,9 +73,7 @@ public class MainActivity extends AppCompatActivity
     Context mainActivityContext = this;
 
     //Current page
-    int currPage;
-    //Create an endless scroll listener
-    private EndlessScrollListener scrollListener;
+    private int currPage = 0;
 
 
     @Override
@@ -88,15 +85,6 @@ public class MainActivity extends AppCompatActivity
         //Set up RecyclerView
         mLayoutManager = new GridLayoutManager(this, 3);
         mRecyclerView.setLayoutManager(mLayoutManager);
-
-        scrollListener = new EndlessScrollListener(mLayoutManager) {
-            @Override
-            public boolean onLoadMore(int page, int totalitemsCount) {
-                loadMovies();
-                return true;
-            }
-        };
-        mRecyclerView.addOnScrollListener(scrollListener);
         movieClickListener = this;
         mAdapter = new MovieAdapter(this, movieArray, movieClickListener);
         mRecyclerView.setAdapter(mAdapter);
@@ -162,8 +150,6 @@ public class MainActivity extends AppCompatActivity
         //Reset the movies, and load some new ones
         mAdapter.resetList();
         movieArray.clear();
-        scrollListener.resetState();
-        currPage = 0;
         loadMovies();
     }
 
@@ -194,8 +180,6 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void loadMovies(){
-        currPage++;
-
         //Get the URL
         ArrayList<String> movieSearchList = new ArrayList<>();
         //Get the next page
