@@ -31,7 +31,11 @@ import butterknife.ButterKnife;
 
 /**
  * Main class for the MainActivity
+ *
  * Loader implemented with help from Udacity "Android Developer Nanodegree Program" Lesson 7: "Lifecycle" Part 16: "Leveraging Loaders" (Credit to the "The Android Open Source Project")
+ *
+ * Infinite scrolling Code from the "codepath" github repository.
+ * Instructions I followed: https://github.com/codepath/android_guides/wiki/Endless-Scrolling-with-AdapterViews-and-RecyclerView
  */
 
 public class MainActivity extends AppCompatActivity
