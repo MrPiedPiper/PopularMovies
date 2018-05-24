@@ -39,7 +39,7 @@ public class MainActivity extends AppCompatActivity
             MovieAdapter.MovieClickListener,
             LoaderManager.LoaderCallbacks<ArrayList<MovieObject>>{
 
-    //Prepare RecyclerView variables
+    ///Prepare RecyclerView variables
     @BindView(R.id.mainRecyclerView) RecyclerView mRecyclerView;
     private MovieAdapter mAdapter;
     MovieAdapter.MovieClickListener movieClickListener;
