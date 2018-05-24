@@ -7,7 +7,7 @@ package com.fancystachestudios.popularmovies.popularmovies.MovieAPI;
 public class MovieAPIManager {
 
     //API key
-    static String KEY = "testing";
+    static String KEY = "Your API key goes here";
 
 
     //URL to movie list
