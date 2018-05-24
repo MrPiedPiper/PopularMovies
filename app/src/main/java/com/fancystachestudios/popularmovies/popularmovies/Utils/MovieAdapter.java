@@ -1,10 +1,14 @@
 package com.fancystachestudios.popularmovies.popularmovies.Utils;
 
+import android.content.Context;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.view.animation.RotateAnimation;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -27,18 +31,23 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
     private MovieAPIManager movieAPIManager = new MovieAPIManager();
     //Get the MovieClickListener
     final private MovieClickListener mMovieClickListener;
+    //Set the Context variable
+    Context currContext;
 
     //Create the ViewHolder for the RecyclerView (With an OnClickListener)
     public class ViewHolder extends  RecyclerView.ViewHolder implements View.OnClickListener{
         //Declare variables to hold the Views
         TextView mListNumberTextView;
         ConstraintLayout mLayout;
+        ImageView mLoadImageView;
         ImageView mImageView;
+
         ViewHolder (View v){
             super(v);
             //Set the Views to the variables
             mLayout = v.findViewById(R.id.item_root_layout);
             mListNumberTextView = v.findViewById(R.id.item_list_number_text);
+            mLoadImageView = v.findViewById(R.id.loading_item);
             mImageView = v.findViewById(R.id.item_background_image);
             //Set the OnClickListener
             v.setOnClickListener(this);
@@ -57,7 +66,9 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
         void onMovieClick(int clickedItemIndex);
     }
 
-    public MovieAdapter(ArrayList<MovieObject> myDataSet, MovieClickListener listener){
+    public MovieAdapter(Context context, ArrayList<MovieObject> myDataSet, MovieClickListener listener){
+        //Set the currContext variable
+        currContext = context;
         //Set the Dataset to the provided ArrayList
         mDataset = myDataSet;
         //Set the MovieclickListener to the provided Listener
@@ -78,11 +89,29 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(final ViewHolder holder, int position) {
+        //Activate the loading_animation animation
+        Animation anim = AnimationUtils.loadAnimation(currContext, R.anim.loading_animation);
+        holder.mLoadImageView.startAnimation(anim);
         //Get the poster path
         String posterPath = movieAPIManager.getPosterPath(mDataset.get(position));
+
         //Use Picasso to load the image into the ImageView
-        Picasso.get().load(posterPath).into(holder.mImageView);
+        Picasso.get().load(posterPath).into(holder.mImageView, new com.squareup.picasso.Callback(){
+
+            @Override
+            public void onSuccess() {
+                //Clear the animation and have the loading image disappear
+                holder.mLoadImageView.clearAnimation();
+                holder.mLoadImageView.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onError(Exception e) {
+
+            }
+        });
+
         //Set the mListNumberTextView to position +1
         holder.mListNumberTextView.setText(String.valueOf(position + 1));
     }

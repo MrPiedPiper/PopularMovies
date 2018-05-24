@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--Used http://inloop.github.io/svg2android/ to convert this from SVG to XML-->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:viewportWidth="24"
+    android:viewportHeight="24"
+    android:width="24dp"
+    android:height="24dp">
+    <group
+        android:rotation="-45"
+        android:scaleX="1"
+        android:scaleY="-1"
+        android:translateX="12"
+        android:translateY="28.9706">
+        <path
+            android:pathData="M19 8l-4 4 3 0c0 3.31 -2.69 6 -6 6 -1.01 0 -1.97 -0.25 -2.8 -0.7L7.74 18.76C8.97 19.54 10.43 20 12 20c4.42 0 8 -3.58 8 -8l3 0 -4 -4z"
+            android:fillColor="#000000"
+            android:strokeLineJoin="round"
+            android:strokeMiterLimit="1.41421" />
+    </group>
+    <group
+        android:rotation="-45"
+        android:scaleX="1"
+        android:scaleY="-1"
+        android:translateX="12"
+        android:translateY="28.9706">
+        <path
+            android:pathData="M6 12c0 -3.31 2.69 -6 6 -6 1.01 0 1.97 0.25 2.8 0.7L16.26 5.24C15.03 4.46 13.57 4 12 4 7.58 4 4 7.58 4 12l2 0z"
+            android:fillColor="#000000"
+            android:strokeLineJoin="round"
+            android:strokeMiterLimit="1.41421" />
+    </group>
+    <group
+        android:rotation="30.00001"
+        android:scaleX="0.9999996"
+        android:scaleY="-0.9999996"
+        android:translateX="-4.3923"
+        android:translateY="16.3923">
+        <path
+            android:pathData="M6 12c0 -3.31 2.69 -6 6 -6 1.01 0 1.97 0.25 2.8 0.7L16.26 5.24C15.03 4.46 13.57 4 12 4 7.58 4 4 7.58 4 12l2 0z"
+            android:fillColor="#000000"
+            android:strokeLineJoin="round"
+            android:strokeMiterLimit="1.41421" />
+    </group>
+</vector>

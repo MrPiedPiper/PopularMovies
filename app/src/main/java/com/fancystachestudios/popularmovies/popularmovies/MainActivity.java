@@ -87,7 +87,7 @@ public class MainActivity extends AppCompatActivity
         mLayoutManager = new GridLayoutManager(this, 3);
         mRecyclerView.setLayoutManager(mLayoutManager);
         movieClickListener = this;
-        mAdapter = new MovieAdapter(movieArray, movieClickListener);
+        mAdapter = new MovieAdapter(this, movieArray, movieClickListener);
         mRecyclerView.setAdapter(mAdapter);
 
         //Load the movies
@@ -172,7 +172,7 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void run() {
                 //Create a new Adapter
-                RecyclerView.Adapter newAdapter = new MovieAdapter(movieArray, movieClickListener);
+                RecyclerView.Adapter newAdapter = new MovieAdapter(mainActivityContext, movieArray, movieClickListener);
                 //Set the RecyclerView to use the Adapter
                 mRecyclerView.swapAdapter(newAdapter, true);
             }
@@ -240,7 +240,7 @@ public class MainActivity extends AppCompatActivity
                 if(args == null){
                     return;
                 }
-                //TODO add loading gif
+                //TODO add loading_animation gif
             }
 
             @Override
@@ -258,13 +258,11 @@ public class MainActivity extends AppCompatActivity
                         currPage = networkUtils.getMoviesFromUrl(movieSearchUrl);
                         for(int j=0; j<currPage.size(); j++){
                             movies.add(currPage.get(j));
-                            Log.d("mytest", "This is " + currPage.get(j));
                         }
                     } catch (IOException e) {
                         e.printStackTrace();
                         return null;
                     }
-                    Log.d("mytest", "There are " + movies.size() + " movies");
                 }
                 //Return movies
                 return movies;
@@ -277,7 +275,7 @@ public class MainActivity extends AppCompatActivity
     public void onLoadFinished(android.support.v4.content.Loader<ArrayList<MovieObject>> loader, ArrayList<MovieObject> mMovieList) {
         //Refresh the movies
         refreshMovies(mMovieList);
-        //TODO loading GIF
+        //TODO loading_animation GIF
     }
 
     @Override

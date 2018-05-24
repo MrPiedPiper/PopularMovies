@@ -2,7 +2,7 @@
 
 <!--RecyclerView item-->
 
-<android.support.constraint.ConstraintLayout
+<android.support.constraint.ConstraintLayout xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/item_root_layout"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
@@ -11,6 +11,7 @@
     android:background="@color/colorPrimaryDark">
 
     <ImageView
+        android:background="@drawable/placeholder"
         android:id="@+id/item_background_image"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -23,5 +24,20 @@
         android:layout_height="wrap_content"
         android:background="@color/colorAccent"
         android:textColor="#FFF"/>
+
+    <ImageView
+        android:id="@+id/loading_item"
+        android:layout_width="72dp"
+        android:layout_height="72dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:adjustViewBounds="true"
+        android:background="@drawable/loading_item"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </android.support.constraint.ConstraintLayout>
