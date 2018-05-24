@@ -8,7 +8,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -93,8 +92,9 @@ public class MainActivity extends AppCompatActivity
         mRecyclerView.setAdapter(mAdapter);
         mScrollListener = new EndlessScrollListener(mLayoutManager) {
             @Override
-            protected void onScroll() {
-                loadMovies();
+            protected void addItems() {
+                //When more items are needed, load next page
+                loadNextPage();
             }
         };
         mRecyclerView.addOnScrollListener(mScrollListener);
@@ -162,7 +162,7 @@ public class MainActivity extends AppCompatActivity
         mAdapter.resetList();
         movieArray.clear();
         mScrollListener.resetScroll();
-        loadMovies();
+        loadNextPage();
     }
 
     @Override
@@ -191,7 +191,7 @@ public class MainActivity extends AppCompatActivity
         refreshMovies();
     }
 
-    private void loadMovies(){
+    private void loadNextPage(){
         currPage++;
         //Get the URL
         ArrayList<String> movieSearchList = new ArrayList<>();
@@ -240,7 +240,6 @@ public class MainActivity extends AppCompatActivity
                         URL movieSearchUrl = new URL(movieSearchArrayList.get(i));
                         //Get the movies
                         currPage = networkUtils.getMoviesFromUrl(movieSearchUrl);
-                        Log.d("myeteste", String.valueOf(currPage.size()));
                         //Set the movie variable
                         movies.addAll(currPage);
                     } catch (IOException e) {

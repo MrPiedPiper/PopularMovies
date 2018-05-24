@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
@@ -52,7 +51,6 @@ public class DetailActivity extends AppCompatActivity {
     private void setViewsWithMovie(MovieObject movie){
         //Load all of the data from the movie object and set View data accordingly
         Picasso.get().load(movieAPIManager.getBackdropPath(movie)).into(backdropImageView);
-        Log.d("myBackdropTest", movieAPIManager.getBackdropPath(movie));
         voteCountTextView.setText(String.valueOf(movie.getVoteCount()));
         voteAverageRatingBar.setRating(movie.getVoteAverage()/2);
         titleTextView.setText(movie.getTitle());

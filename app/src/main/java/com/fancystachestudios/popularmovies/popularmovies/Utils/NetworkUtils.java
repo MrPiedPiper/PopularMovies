@@ -1,8 +1,5 @@
 package com.fancystachestudios.popularmovies.popularmovies.Utils;
 
-import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
-
 import com.fancystachestudios.popularmovies.popularmovies.MovieAPI.MovieObject;
 import com.google.gson.Gson;
 
@@ -66,9 +63,6 @@ public class NetworkUtils {
         JSONObject baseJsonResults = stringToJsonObject(resultString);
         //Get movies from the JSONObject
         ArrayList<MovieObject> movies = getMovieArrayFromJsonResults(baseJsonResults);
-
-        Log.d("problem", "used URL: "+url);
-        Log.d("problem", "size of return: "+movies.size());
 
         //Return the movies
         return movies;
