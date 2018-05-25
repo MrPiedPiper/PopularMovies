@@ -1,19 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--MainActivity layout-->
-
-<android.support.v7.widget.RecyclerView
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.fancystachestudios.popularmovies.popularmovies.MainActivity"
-    android:id="@+id/mainRecyclerView"
-    android:scrollbars="vertical"
     android:background="@color/colorPrimaryDark"
-    android:padding="1dp">
+    tools:context="com.fancystachestudios.popularmovies.popularmovies.MainActivity">
 
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/mainRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="1dp"
+        android:scrollbars="vertical">
 
+    </android.support.v7.widget.RecyclerView>
 
-</android.support.v7.widget.RecyclerView>
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/main_loading_layout"
+        android:background="@color/colorPrimary"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/main_loading_imageview"
+            android:layout_width="104dp"
+            android:layout_height="104dp"
+            android:contentDescription="@string/main_recyclerview_loading_content_description"
+            android:src="@drawable/loading_item"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </android.support.constraint.ConstraintLayout>
+
+</android.support.constraint.ConstraintLayout>

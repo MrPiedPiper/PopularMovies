@@ -1,6 +1,7 @@
 package com.fancystachestudios.popularmovies.popularmovies;
 
 import android.annotation.SuppressLint;
+import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.LoaderManager;
 import android.content.Context;
 import android.content.Intent;
@@ -11,8 +12,11 @@ import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -43,8 +47,14 @@ public class MainActivity extends AppCompatActivity
             MovieAdapter.MovieClickListener,
             LoaderManager.LoaderCallbacks<ArrayList<MovieObject>>{
 
-    //Prepare RecyclerView variables
+    //Get View(s)
     @BindView(R.id.mainRecyclerView) RecyclerView mRecyclerView;
+    @BindView(R.id.main_loading_layout) ConstraintLayout mRefreshLoadingLayout;
+    @BindView(R.id.main_loading_imageview) ImageView mRefreshLoadingImageView;
+
+    Animation anim;
+
+    //Prepare RecyclerView variables
     private MovieAdapter mAdapter;
     MovieAdapter.MovieClickListener movieClickListener;
     GridLayoutManager mLayoutManager;
@@ -83,6 +93,8 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+
+        anim = AnimationUtils.loadAnimation(this, R.anim.loading_animation);
 
         //Set up RecyclerView
         mLayoutManager = new GridLayoutManager(this, 3);
@@ -158,11 +170,24 @@ public class MainActivity extends AppCompatActivity
     //Function refreshes the list
     public void refreshMovies(){
         //Reset the movies, and load some new ones
+        startRefreshLoadAnimation();
         currPage = 0;
         mAdapter.resetList();
         movieArray.clear();
         mScrollListener.resetScroll();
         loadNextPage();
+    }
+
+    public void startRefreshLoadAnimation(){
+        //Set the loading ImageView
+        mRefreshLoadingLayout.setVisibility(View.VISIBLE);
+        mRefreshLoadingImageView.startAnimation(anim);
+    }
+
+    public void stopRefreshLoadAnimation(){
+        //Set the loading ImageView
+        mRefreshLoadingImageView.clearAnimation();
+        mRefreshLoadingLayout.setVisibility(View.GONE);
     }
 
     @Override
@@ -278,6 +303,7 @@ public class MainActivity extends AppCompatActivity
         //refreshMovies(mMovieList);
         movieArray.addAll(mMovieList);
         mAdapter.updateList(movieArray);
+        stopRefreshLoadAnimation();
     }
 
     @Override
