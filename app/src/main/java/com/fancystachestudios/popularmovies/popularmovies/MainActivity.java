@@ -52,6 +52,7 @@ public class MainActivity extends AppCompatActivity
     @BindView(R.id.main_loading_layout) ConstraintLayout mRefreshLoadingLayout;
     @BindView(R.id.main_loading_imageview) ImageView mRefreshLoadingImageView;
 
+    //Declare the anim variable
     Animation anim;
 
     //Prepare RecyclerView variables
@@ -94,6 +95,7 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
+        //Set the anim variable to my custom loading animation
         anim = AnimationUtils.loadAnimation(this, R.anim.loading_animation);
 
         //Set up RecyclerView
@@ -169,8 +171,9 @@ public class MainActivity extends AppCompatActivity
 
     //Function refreshes the list
     public void refreshMovies(){
-        //Reset the movies, and load some new ones
+        //Start the loading animation
         startRefreshLoadAnimation();
+        //Reset the movies, and load some new ones
         currPage = 0;
         mAdapter.resetList();
         movieArray.clear();
@@ -179,14 +182,16 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void startRefreshLoadAnimation(){
-        //Set the loading ImageView
+        //Make the loading layout visible
         mRefreshLoadingLayout.setVisibility(View.VISIBLE);
+        //Start the animation
         mRefreshLoadingImageView.startAnimation(anim);
     }
 
     public void stopRefreshLoadAnimation(){
-        //Set the loading ImageView
+        //Stop the animation
         mRefreshLoadingImageView.clearAnimation();
+        //Make the loading layout invisible
         mRefreshLoadingLayout.setVisibility(View.GONE);
     }
 
@@ -299,10 +304,11 @@ public class MainActivity extends AppCompatActivity
             });
             return;
         }
-        //Refresh the movies
-        //refreshMovies(mMovieList);
+        //Add the new movies to the list
         movieArray.addAll(mMovieList);
+        //Update the Adapter's list
         mAdapter.updateList(movieArray);
+        //Stop the loading animation
         stopRefreshLoadAnimation();
     }
 
