@@ -15,6 +15,7 @@
     <string-array name="main_menu_sorting_spinner_array">
         <item>Popularity</item>
         <item>Rating</item>
+        <item>Favorites</item>
     </string-array>
 
 
