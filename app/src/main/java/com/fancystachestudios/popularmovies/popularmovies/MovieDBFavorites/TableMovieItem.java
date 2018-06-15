@@ -3,6 +3,8 @@ package com.fancystachestudios.popularmovies.popularmovies.MovieDBFavorites;
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.support.v4.widget.CircularProgressDrawable;
 
 import com.fancystachestudios.popularmovies.popularmovies.MovieAPI.MovieObject;
@@ -14,7 +16,7 @@ import java.io.Serializable;
  */
 
 @Entity(tableName = "movies")
-public class TableMovieItem implements Serializable {
+public class TableMovieItem implements Parcelable {
 
     //Create all necessary variables
     @ColumnInfo(name = "vote_count")
@@ -113,6 +115,35 @@ public class TableMovieItem implements Serializable {
     }
 
     //Set all of the getters and setters
+
+    protected TableMovieItem(Parcel in) {
+        voteCount = in.readInt();
+        id = in.readInt();
+        video = in.readByte() != 0;
+        voteAverage = in.readInt();
+        title = in.readString();
+        popularity = in.readInt();
+        posterPath = in.readString();
+        originalLanguage = in.readString();
+        originalTitle = in.readString();
+        genreIds = in.createIntArray();
+        backdropPath = in.readString();
+        adult = in.readByte() != 0;
+        overview = in.readString();
+        releaseDate = in.readString();
+    }
+
+    public static final Creator<TableMovieItem> CREATOR = new Creator<TableMovieItem>() {
+        @Override
+        public TableMovieItem createFromParcel(Parcel in) {
+            return new TableMovieItem(in);
+        }
+
+        @Override
+        public TableMovieItem[] newArray(int size) {
+            return new TableMovieItem[size];
+        }
+    };
 
     public void setVoteCount(int newVoteCount){
         this.voteCount = newVoteCount;
@@ -224,5 +255,31 @@ public class TableMovieItem implements Serializable {
 
     public String getReleaseDate(){
         return releaseDate;
+    }
+
+
+
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeInt(voteCount);
+        parcel.writeInt(id);
+        parcel.writeByte((byte) (video ? 1 : 0));
+        parcel.writeInt(voteAverage);
+        parcel.writeString(title);
+        parcel.writeInt(popularity);
+        parcel.writeString(posterPath);
+        parcel.writeString(originalLanguage);
+        parcel.writeString(originalTitle);
+        parcel.writeIntArray(genreIds);
+        parcel.writeString(backdropPath);
+        parcel.writeByte((byte) (adult ? 1 : 0));
+        parcel.writeString(overview);
+        parcel.writeString(releaseDate);
     }
 }

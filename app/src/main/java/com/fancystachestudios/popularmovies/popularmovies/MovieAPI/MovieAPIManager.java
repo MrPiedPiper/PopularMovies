@@ -1,12 +1,14 @@
 package com.fancystachestudios.popularmovies.popularmovies.MovieAPI;
 
+import com.fancystachestudios.popularmovies.popularmovies.MovieDBFavorites.TableMovieItem;
+
 /**
  * MovieAPIManager is a utility class for interacting with the themoviedb.org API
  */
 
 public class MovieAPIManager {
 
-    //API key
+    //API key 
     static String KEY = "Your API key goes here";
 
 
@@ -35,12 +37,12 @@ public class MovieAPIManager {
     }
 
     //Method returns path the the poster image
-    public String getPosterPath(MovieObject movie){
+    public String getPosterPath(TableMovieItem movie){
         return IMAGE_BASE_185 + movie.getPosterPath();
     }
 
     //Method returns path the the backdrop image
-    public String getBackdropPath(MovieObject movie){
+    public String getBackdropPath(TableMovieItem movie){
         return IMAGE_BASE_780 + movie.getBackdropPath();
     }
 

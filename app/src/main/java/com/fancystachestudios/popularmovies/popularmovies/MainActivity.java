@@ -98,6 +98,9 @@ public class MainActivity extends AppCompatActivity
     //Current page
     private int currPage = 0;
 
+    //Load the Database
+    AppDatabase favoriteDb;
+    MovieDao movieDao;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -123,6 +126,10 @@ public class MainActivity extends AppCompatActivity
         };
         mRecyclerView.addOnScrollListener(mScrollListener);
 
+        favoriteDb = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, getString(R.string.favorite_movies_table_name)).build();
+        movieDao = favoriteDb.movieDao();
+
+
         new databaseTest().execute();
 
         //Load the movies
@@ -133,6 +140,8 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
+
         getMenuInflater().inflate(R.menu.menu_main, menu);
 
         //Get the sorting Spinner
@@ -285,14 +294,14 @@ public class MainActivity extends AppCompatActivity
             public ArrayList<TableMovieItem> loadInBackground() {
                 //If the currListSort is Favorite Movies,
                 if(currListSort == getString(R.string.favorite_key)){
-                    //Load the Database
-                    AppDatabase favoriteDb = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, getString(R.string.favorite_movies_table_name)).build();
-                    //Get the DAO
-                    MovieDao movieDao = favoriteDb.movieDao();
 
                     //Add the movies to the movies variable
                     ArrayList<TableMovieItem> movies = new ArrayList<>();
                     movies.addAll(movieDao.getAll());
+
+                    favoriteDb.close();
+
+                    Log.d("datatest", String.valueOf(movies.size()));
 
                     //Return the movies
                     return movies;
@@ -399,4 +408,9 @@ public class MainActivity extends AppCompatActivity
     }
 
 
+    @Override
+    protected void onDestroy() {
+        favoriteDb.close();
+        super.onDestroy();
+    }
 }

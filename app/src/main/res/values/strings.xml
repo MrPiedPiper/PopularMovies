@@ -7,16 +7,21 @@
 
     <!--MainActivity Toolbar items-->
 
-    <!--Title for the MainActivity Toolbar sort Spinner-->
+    <!--Title for the MainActivity Toolbar Sort Spinner-->
     <string name="main_menu_sorting_spinner">Sort</string>
-    <!--Title for the MainActivity Toolbar refresh Button-->
+    <!--Title for the MainActivity Toolbar Refresh Button-->
     <string name="main_menu_refresh">Refresh</string>
-    <!--Items for the MainActivity Toolbar sort Spinner-->
+    <!--Items for the MainActivity Toolbar Sort Spinner-->
     <string-array name="main_menu_sorting_spinner_array">
         <item>Popularity</item>
         <item>Rating</item>
         <item>Favorites</item>
     </string-array>
+
+    <!--DetailActivity Toolbar items-->
+
+    <!--Title for the DetailActivity Toolbar Favorite Button-->
+    <string name="detail_menu_favorite_button">Favorite</string>
 
 
     <!--DetailActivity Strings-->
