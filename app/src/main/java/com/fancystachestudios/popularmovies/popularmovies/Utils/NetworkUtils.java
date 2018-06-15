@@ -1,6 +1,7 @@
 package com.fancystachestudios.popularmovies.popularmovies.Utils;
 
 import com.fancystachestudios.popularmovies.popularmovies.MovieAPI.MovieObject;
+import com.fancystachestudios.popularmovies.popularmovies.MovieDBFavorites.TableMovieItem;
 import com.google.gson.Gson;
 
 import org.json.JSONArray;
@@ -42,7 +43,7 @@ public class NetworkUtils {
      * @return ArrayList of MovieObjects
      * @throws IOException failed to retrieve from URL
      */
-    public ArrayList<MovieObject> getMoviesFromUrl(URL url) throws IOException {
+    public ArrayList<TableMovieItem> getMoviesFromUrl(URL url) throws IOException {
 
         //Followed these instructions to learn how to use OkHttp http://www.vogella.com/tutorials/JavaLibrary-OkHttp/article.html
 
@@ -62,7 +63,7 @@ public class NetworkUtils {
         //Convert the String into a JSONObject
         JSONObject baseJsonResults = stringToJsonObject(resultString);
         //Get movies from the JSONObject
-        ArrayList<MovieObject> movies = getMovieArrayFromJsonResults(baseJsonResults);
+        ArrayList<TableMovieItem> movies = getMovieArrayFromJsonResults(baseJsonResults);
 
         //Return the movies
         return movies;
@@ -73,18 +74,20 @@ public class NetworkUtils {
      * @param jsonResults JSON retrieved from themoviedb
      * @return ArrayList of MovieObjects
      */
-    private ArrayList<MovieObject> getMovieArrayFromJsonResults(JSONObject jsonResults) {
+    private ArrayList<TableMovieItem> getMovieArrayFromJsonResults(JSONObject jsonResults) {
         try {
             //Gain access to Gson
             Gson gson = new Gson();
             //Get the JSONArray of movies (Could cause JSONException)
             JSONArray jsonArrayMovies = jsonResults.getJSONArray("results");
             //Make the "movies" ArrayList
-            ArrayList<MovieObject> movies = new ArrayList<>();
+            ArrayList<TableMovieItem> movies = new ArrayList<>();
             //For each movie in the JSON,
             for(int i = 0; i < jsonArrayMovies.length(); i++){
                 //put the JSON into a MovieObject (using Gson) (Could cause JSONException)
-                MovieObject currMovie = gson.fromJson(jsonArrayMovies.get(i).toString(), MovieObject.class);
+                MovieObject gsonMovieObject = gson.fromJson(jsonArrayMovies.get(i).toString(), MovieObject.class);
+                //Convert the gsonMovieObject to a TableMovieItem
+                TableMovieItem currMovie = new TableMovieItem(gsonMovieObject);
                 //Add the movie to the ArrayList
                 movies.add(i, currMovie);
             }

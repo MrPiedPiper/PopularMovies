@@ -3,6 +3,8 @@ package com.fancystachestudios.popularmovies.popularmovies;
 import android.annotation.SuppressLint;
 import android.app.ActionBar;
 import android.arch.persistence.room.Room;
+import android.arch.persistence.room.RoomDatabase;
+import android.content.res.Resources;
 import android.os.AsyncTask;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.LoaderManager;
@@ -53,7 +55,7 @@ import butterknife.ButterKnife;
 public class MainActivity extends AppCompatActivity
         implements
             MovieAdapter.MovieClickListener,
-            LoaderManager.LoaderCallbacks<ArrayList<MovieObject>>{
+            LoaderManager.LoaderCallbacks<ArrayList<TableMovieItem>>{
 
     //Get View(s)
     @BindView(R.id.mainRecyclerView) RecyclerView mRecyclerView;
@@ -85,7 +87,7 @@ public class MainActivity extends AppCompatActivity
     String currListSort = MovieAPIManager.POPULARITY;
 
     //Create array for storing the movies
-    ArrayList<MovieObject> movieArray = new ArrayList<>();
+    ArrayList<TableMovieItem> movieArray = new ArrayList<>();
 
     //Create general use Toast
     Toast generalToast;
@@ -159,6 +161,8 @@ public class MainActivity extends AppCompatActivity
                     loadPopularMovies();
                 } else if (itemText.equals(possibleItems[1])) {
                     loadTopRatedMovies();
+                } else if (itemText.equals(possibleItems[2])){
+                    loadFavoriteMovies();
                 }
             }
 
@@ -233,6 +237,14 @@ public class MainActivity extends AppCompatActivity
         refreshMovies();
     }
 
+    //Function sets the sort to favorite movies, and refreshes the movies
+    private void loadFavoriteMovies(){
+        //Set the sort to Rating
+        currListSort = getString(R.string.favorite_key);
+        //Refresh the movies
+        refreshMovies();
+    }
+
     private void loadNextPage(){
         currPage++;
         //Get the URL
@@ -247,7 +259,7 @@ public class MainActivity extends AppCompatActivity
         //Get the LoaderManager
         LoaderManager loaderManager = getSupportLoaderManager();
         //Get the Loader by ID
-        android.support.v4.content.Loader<ArrayList<MovieObject>> movieLoader = loaderManager.getLoader(THEMOVIEDB_LOADER_ID);
+        android.support.v4.content.Loader<ArrayList<TableMovieItem>> movieLoader = loaderManager.getLoader(THEMOVIEDB_LOADER_ID);
         if(movieLoader == null){
             //If it's not there, make it.
             loaderManager.initLoader(THEMOVIEDB_LOADER_ID, queryBundle, this).forceLoad();
@@ -259,8 +271,8 @@ public class MainActivity extends AppCompatActivity
 
     @SuppressLint("StaticFieldLeak")
     @Override
-    public android.support.v4.content.Loader<ArrayList<MovieObject>> onCreateLoader(int i, final Bundle args) {
-        return new android.support.v4.content.AsyncTaskLoader<ArrayList<MovieObject>>(this) {
+    public android.support.v4.content.Loader<ArrayList<TableMovieItem>> onCreateLoader(int i, final Bundle args) {
+        return new android.support.v4.content.AsyncTaskLoader<ArrayList<TableMovieItem>>(this) {
             @Override
             protected void onStartLoading() {
                 super.onStartLoading();
@@ -270,12 +282,26 @@ public class MainActivity extends AppCompatActivity
             }
 
             @Override
-            public ArrayList<MovieObject> loadInBackground() {
+            public ArrayList<TableMovieItem> loadInBackground() {
+                //If the currListSort is Favorite Movies,
+                if(currListSort == getString(R.string.favorite_key)){
+                    //Load the Database
+                    AppDatabase favoriteDb = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, getString(R.string.favorite_movies_table_name)).build();
+                    //Get the DAO
+                    MovieDao movieDao = favoriteDb.movieDao();
+
+                    //Add the movies to the movies variable
+                    ArrayList<TableMovieItem> movies = new ArrayList<>();
+                    movies.addAll(movieDao.getAll());
+
+                    //Return the movies
+                    return movies;
+                }
                 //Get the URL to the movies
                 ArrayList<String> movieSearchArrayList = args.getStringArrayList(SEARCH_QUERY_URL);
                 //Set the movie ArrayList
-                ArrayList<MovieObject> movies = new ArrayList<>();
-                ArrayList<MovieObject> currPage;
+                ArrayList<TableMovieItem> movies = new ArrayList<>();
+                ArrayList<TableMovieItem> currPage;
                 for(int i=0; i<movieSearchArrayList.size(); i++){
                     try {
                         //Convert the String into a URL
@@ -297,7 +323,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public void onLoadFinished(android.support.v4.content.Loader<ArrayList<MovieObject>> loader, ArrayList<MovieObject> mMovieList) {
+    public void onLoadFinished(android.support.v4.content.Loader<ArrayList<TableMovieItem>> loader, ArrayList<TableMovieItem> mMovieList) {
         //If there's no movies in the ArrayList show error message to the user
         if(mMovieList == null || mMovieList.size() == 0) {
             runOnUiThread(new Runnable() {
@@ -326,7 +352,7 @@ public class MainActivity extends AppCompatActivity
 
         TableMovieItem[] testDbArray = new TableMovieItem[movieArray.size()];
         for(int i=0; i<movieArray.size(); i++){
-            testDbArray[i] = new TableMovieItem(movieArray.get(i));
+            testDbArray[i] = movieArray.get(i);
         }
 
         //new databaseTest().execute(testDbArray);
@@ -368,7 +394,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public void onLoaderReset(android.support.v4.content.Loader<ArrayList<MovieObject>> loader) {
+    public void onLoaderReset(android.support.v4.content.Loader<ArrayList<TableMovieItem>> loader) {
 
     }
 

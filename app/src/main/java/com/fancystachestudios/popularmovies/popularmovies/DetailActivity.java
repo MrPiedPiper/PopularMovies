@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.fancystachestudios.popularmovies.popularmovies.MovieAPI.MovieAPIManager;
 import com.fancystachestudios.popularmovies.popularmovies.MovieAPI.MovieObject;
+import com.fancystachestudios.popularmovies.popularmovies.MovieDBFavorites.TableMovieItem;
 import com.squareup.picasso.Picasso;
 
 import butterknife.BindView;
@@ -41,14 +42,14 @@ public class DetailActivity extends AppCompatActivity {
 
         //Retrieve the movie selected to open the DetailActivity
         Intent intent = getIntent();
-        MovieObject movie = (MovieObject) intent.getSerializableExtra(getString(R.string.detail_intent_tag));
+        TableMovieItem movie = (TableMovieItem) intent.getSerializableExtra(getString(R.string.detail_intent_tag));
 
         //Set the views to the data from the movie
         setViewsWithMovie(movie);
     }
 
     //Function sets the attributes of the Views based on the MovieObject
-    private void setViewsWithMovie(MovieObject movie){
+    private void setViewsWithMovie(TableMovieItem movie){
         //Load all of the data from the movie object and set View data accordingly
         Picasso.get().load(movieAPIManager.getBackdropPath(movie)).into(backdropImageView);
         voteCountTextView.setText(String.valueOf(movie.getVoteCount()));

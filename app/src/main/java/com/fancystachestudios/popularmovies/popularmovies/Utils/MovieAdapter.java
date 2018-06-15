@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import com.fancystachestudios.popularmovies.popularmovies.MovieAPI.MovieAPIManager;
 import com.fancystachestudios.popularmovies.popularmovies.MovieAPI.MovieObject;
+import com.fancystachestudios.popularmovies.popularmovies.MovieDBFavorites.TableMovieItem;
 import com.fancystachestudios.popularmovies.popularmovies.R;
 import com.squareup.picasso.Picasso;
 
@@ -26,7 +27,7 @@ import java.util.ArrayList;
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> {
 
     //Declare variable to hold Dataset
-    private ArrayList<MovieObject> mDataset;
+    private ArrayList<TableMovieItem> mDataset;
     //Get access to MovieAPIManager
     private MovieAPIManager movieAPIManager = new MovieAPIManager();
     //Get the MovieClickListener
@@ -66,7 +67,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
         void onMovieClick(int clickedItemIndex);
     }
 
-    public MovieAdapter(Context context, ArrayList<MovieObject> myDataSet, MovieClickListener listener){
+    public MovieAdapter(Context context, ArrayList<TableMovieItem> myDataSet, MovieClickListener listener){
         //Set the currContext variable
         currContext = context;
         //Set the Dataset to the provided ArrayList
@@ -124,7 +125,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
     }
 
     //Updates the list
-    public void updateList(ArrayList<MovieObject> newMovies){
+    public void updateList(ArrayList<TableMovieItem> newMovies){
         mDataset = newMovies;
         notifyDataSetChanged();
     }
