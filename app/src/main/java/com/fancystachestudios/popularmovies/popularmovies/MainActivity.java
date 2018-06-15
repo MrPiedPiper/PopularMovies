@@ -1,6 +1,9 @@
 package com.fancystachestudios.popularmovies.popularmovies;
 
 import android.annotation.SuppressLint;
+import android.app.ActionBar;
+import android.arch.persistence.room.Room;
+import android.os.AsyncTask;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.LoaderManager;
 import android.content.Context;
@@ -9,6 +12,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -22,6 +26,9 @@ import android.widget.Toast;
 
 import com.fancystachestudios.popularmovies.popularmovies.MovieAPI.MovieAPIManager;
 import com.fancystachestudios.popularmovies.popularmovies.MovieAPI.MovieObject;
+import com.fancystachestudios.popularmovies.popularmovies.MovieDBFavorites.AppDatabase;
+import com.fancystachestudios.popularmovies.popularmovies.MovieDBFavorites.MovieDao;
+import com.fancystachestudios.popularmovies.popularmovies.MovieDBFavorites.TableMovieItem;
 import com.fancystachestudios.popularmovies.popularmovies.Utils.EndlessScrollListener;
 import com.fancystachestudios.popularmovies.popularmovies.Utils.MovieAdapter;
 import com.fancystachestudios.popularmovies.popularmovies.Utils.NetworkUtils;
@@ -29,6 +36,7 @@ import com.fancystachestudios.popularmovies.popularmovies.Utils.NetworkUtils;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -113,8 +121,12 @@ public class MainActivity extends AppCompatActivity
         };
         mRecyclerView.addOnScrollListener(mScrollListener);
 
+        new databaseTest().execute();
+
         //Load the movies
         loadPopularMovies();
+
+
     }
 
     @Override
@@ -310,6 +322,49 @@ public class MainActivity extends AppCompatActivity
         mAdapter.updateList(movieArray);
         //Stop the loading animation
         stopRefreshLoadAnimation();
+
+
+        TableMovieItem[] testDbArray = new TableMovieItem[movieArray.size()];
+        for(int i=0; i<movieArray.size(); i++){
+            testDbArray[i] = new TableMovieItem(movieArray.get(i));
+        }
+
+        //new databaseTest().execute(testDbArray);
+
+    }
+
+    private class databaseTest extends AsyncTask<Void, Void, Void>{
+
+        @Override
+        protected Void doInBackground(Void... tableMovieItems) {
+
+            /*
+            AppDatabase testDb = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, "movies").build();
+            MovieDao testDao = testDb.movieDao();
+            for(TableMovieItem item : tableMovieItems){
+                //Log.d("testing", testDao.findById(item.getId()).toString());
+                if(testDao.findById(item.getId()) == null){
+                    testDao.insertAll(item);
+                }
+            }
+            //testDao.insertAll(tableMovieItems);
+
+            Log.d("test", Integer.toString(testDao.getAll().size()));
+
+            testDb.close();
+            */
+
+            AppDatabase db = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, "movies").build();
+            List<TableMovieItem> testItems = db.movieDao().getAll();
+            Log.d("testing", "GETTING ITEMS");
+            for(TableMovieItem item : testItems){
+                Log.d("testing", item.getTitle());
+                db.movieDao().delete(item);
+            }
+
+
+            return null;
+        }
     }
 
     @Override

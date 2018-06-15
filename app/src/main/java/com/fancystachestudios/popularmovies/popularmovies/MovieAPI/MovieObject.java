@@ -61,7 +61,7 @@ public class MovieObject implements Serializable {
     //Set all of the getters and setters
 
     public void setVoteCount(int newVoteCount){
-        this.vote_count = vote_count;
+        this.vote_count = newVoteCount;
     }
 
     public int getVoteCount(){
@@ -69,15 +69,15 @@ public class MovieObject implements Serializable {
     }
 
     public void setId(int newId){
-        this.id = id;
+        this.id = newId;
     }
 
-    public int getid(){
+    public int getId(){
         return id;
     }
 
     public void setVideo(boolean newVideo){
-        this.video = video;
+        this.video = newVideo;
     }
 
     public boolean getVideo(){
@@ -85,7 +85,7 @@ public class MovieObject implements Serializable {
     }
 
     public void setVoteAverage(int newAverage){
-        this.vote_average = vote_average;
+        this.vote_average = newAverage;
     }
 
     public float getVoteAverage(){
@@ -93,7 +93,7 @@ public class MovieObject implements Serializable {
     }
 
     public void setTitle(String newTitle){
-        this.title = title;
+        this.title = newTitle;
     }
 
     public String getTitle(){
@@ -101,7 +101,7 @@ public class MovieObject implements Serializable {
     }
 
     public void setPopularity(int newPopularity){
-        this.popularity = popularity;
+        this.popularity = newPopularity;
     }
 
     public float getPopularity(){
@@ -109,7 +109,7 @@ public class MovieObject implements Serializable {
     }
 
     public void setPosterPath(String newPosterPath){
-        this.poster_path = poster_path;
+        this.poster_path = newPosterPath;
     }
 
     public String getPosterPath(){
@@ -117,7 +117,7 @@ public class MovieObject implements Serializable {
     }
 
     public void setOriginalLanguage(String newOriginalLanguage){
-        this.original_language = original_language;
+        this.original_language = newOriginalLanguage;
     }
 
     public String getOriginalLanguage(){
@@ -125,7 +125,7 @@ public class MovieObject implements Serializable {
     }
 
     public void setOriginalTitle(String newOriginalTitle){
-        this.original_title = original_title;
+        this.original_title = newOriginalTitle;
     }
 
     public String getOriginalTitle(){
@@ -133,15 +133,15 @@ public class MovieObject implements Serializable {
     }
 
     public void setGenreIds(int[] newGenreIds){
-        this.genre_ids = genre_ids;
+        this.genre_ids = newGenreIds;
     }
 
-    public int[] getGenreids(){
+    public int[] getGenreIds(){
         return genre_ids;
     }
 
     public void setBackdropPath(String newBackdropPath){
-        this.backdrop_path = backdrop_path;
+        this.backdrop_path = newBackdropPath;
     }
 
     public String getBackdropPath(){
@@ -149,7 +149,7 @@ public class MovieObject implements Serializable {
     }
 
     public void setAdult(boolean newAdult){
-        this.adult = adult;
+        this.adult = newAdult;
     }
 
     public boolean getAdult(){
@@ -157,7 +157,7 @@ public class MovieObject implements Serializable {
     }
 
     public void setOverview(String newOverview){
-        this.overview = overview;
+        this.overview = newOverview;
     }
 
     public String getOverview(){
@@ -165,7 +165,7 @@ public class MovieObject implements Serializable {
     }
 
     public void setReleaseDate(String newReleaseDate){
-        this.release_date = release_date;
+        this.release_date = newReleaseDate;
     }
 
     public String getReleaseDate(){

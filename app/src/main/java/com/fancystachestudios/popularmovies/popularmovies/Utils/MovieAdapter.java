@@ -3,6 +3,7 @@ package com.fancystachestudios.popularmovies.popularmovies.Utils;
 import android.content.Context;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -96,7 +97,6 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
         String posterPath = movieAPIManager.getPosterPath(mDataset.get(position));
         //Set the content description
         holder.mImageView.setContentDescription(mDataset.get(position).getTitle());
-
         //Use Picasso to load the image into the ImageView
         Picasso.get().load(posterPath).into(holder.mImageView, new com.squareup.picasso.Callback(){
 
