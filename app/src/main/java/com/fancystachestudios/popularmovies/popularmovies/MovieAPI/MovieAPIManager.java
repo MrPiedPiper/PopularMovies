@@ -8,7 +8,7 @@ import com.fancystachestudios.popularmovies.popularmovies.MovieDBFavorites.Table
 
 public class MovieAPIManager {
 
-    //API key 
+    //API key
     static String KEY = "Your API key goes here";
 
 
