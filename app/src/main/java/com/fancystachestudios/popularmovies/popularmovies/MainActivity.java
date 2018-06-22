@@ -1,11 +1,7 @@
 package com.fancystachestudios.popularmovies.popularmovies;
 
 import android.annotation.SuppressLint;
-import android.app.ActionBar;
 import android.arch.persistence.room.Room;
-import android.arch.persistence.room.RoomDatabase;
-import android.content.res.Resources;
-import android.os.AsyncTask;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.LoaderManager;
 import android.content.Context;
@@ -27,7 +23,6 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.fancystachestudios.popularmovies.popularmovies.MovieAPI.MovieAPIManager;
-import com.fancystachestudios.popularmovies.popularmovies.MovieAPI.MovieObject;
 import com.fancystachestudios.popularmovies.popularmovies.MovieDBFavorites.AppDatabase;
 import com.fancystachestudios.popularmovies.popularmovies.MovieDBFavorites.MovieDao;
 import com.fancystachestudios.popularmovies.popularmovies.MovieDBFavorites.TableMovieItem;
@@ -38,7 +33,6 @@ import com.fancystachestudios.popularmovies.popularmovies.Utils.NetworkUtils;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -126,11 +120,8 @@ public class MainActivity extends AppCompatActivity
         };
         mRecyclerView.addOnScrollListener(mScrollListener);
 
+        //Set the room variable to the database
         favoriteDb = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, getString(R.string.favorite_movies_table_name)).build();
-        movieDao = favoriteDb.movieDao();
-
-
-        new databaseTest().execute();
 
         //Load the movies
         loadPopularMovies();
@@ -255,6 +246,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void loadNextPage(){
+        //Increment the page variable
         currPage++;
         //Get the URL
         ArrayList<String> movieSearchList = new ArrayList<>();
@@ -295,13 +287,11 @@ public class MainActivity extends AppCompatActivity
                 //If the currListSort is Favorite Movies,
                 if(currListSort == getString(R.string.favorite_key)){
 
-                    //Add the movies to the movies variable
+                    //Create the movies ArrayList
                     ArrayList<TableMovieItem> movies = new ArrayList<>();
-                    movies.addAll(movieDao.getAll());
 
-                    favoriteDb.close();
-
-                    Log.d("datatest", String.valueOf(movies.size()));
+                    //Add all the movies from the database to the movies variable
+                    movies.addAll(favoriteDb.movieDao().getAll());
 
                     //Return the movies
                     return movies;
@@ -347,6 +337,10 @@ public class MainActivity extends AppCompatActivity
                                     "Maybe check your connection?",
                             Toast.LENGTH_LONG);
                     generalToast.show();
+
+                    stopRefreshLoadAnimation();
+
+
                 }
             });
             return;
@@ -368,49 +362,10 @@ public class MainActivity extends AppCompatActivity
 
     }
 
-    private class databaseTest extends AsyncTask<Void, Void, Void>{
-
-        @Override
-        protected Void doInBackground(Void... tableMovieItems) {
-
-            /*
-            AppDatabase testDb = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, "movies").build();
-            MovieDao testDao = testDb.movieDao();
-            for(TableMovieItem item : tableMovieItems){
-                //Log.d("testing", testDao.findById(item.getId()).toString());
-                if(testDao.findById(item.getId()) == null){
-                    testDao.insertAll(item);
-                }
-            }
-            //testDao.insertAll(tableMovieItems);
-
-            Log.d("test", Integer.toString(testDao.getAll().size()));
-
-            testDb.close();
-            */
-
-            AppDatabase db = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, "movies").build();
-            List<TableMovieItem> testItems = db.movieDao().getAll();
-            Log.d("testing", "GETTING ITEMS");
-            for(TableMovieItem item : testItems){
-                Log.d("testing", item.getTitle());
-                db.movieDao().delete(item);
-            }
-
-
-            return null;
-        }
-    }
-
     @Override
     public void onLoaderReset(android.support.v4.content.Loader<ArrayList<TableMovieItem>> loader) {
 
     }
 
 
-    @Override
-    protected void onDestroy() {
-        favoriteDb.close();
-        super.onDestroy();
-    }
 }

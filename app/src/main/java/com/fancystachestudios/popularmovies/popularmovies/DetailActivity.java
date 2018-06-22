@@ -6,6 +6,7 @@ import android.arch.persistence.room.Room;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
@@ -59,6 +60,10 @@ public class DetailActivity extends AppCompatActivity
 
     private boolean isFavorite = false;
 
+    //Load the Database
+    AppDatabase favoriteDb;
+    MovieDao movieDao;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -71,6 +76,11 @@ public class DetailActivity extends AppCompatActivity
 
         //Set the views to the data from the movie
         setViewsWithMovie(currMovie);
+
+        //Open up the database
+        favoriteDb = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, getString(R.string.favorite_movies_table_name)).build();
+        //Get the Dao
+        movieDao = favoriteDb.movieDao();
     }
 
     @Override
@@ -109,29 +119,34 @@ public class DetailActivity extends AppCompatActivity
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        super.onOptionsItemSelected(item);
 
-        if(item.getItemId() == R.id.detail_favorite_button){
-            //Add to favorites
+        switch(item.getItemId()) {
+            case android.R.id.home:
+                NavUtils.navigateUpFromSameTask(this);
+                return true;
+            case R.id.detail_favorite_button:
+                //Add to favorites
 
-            //Create a Bundle for the Loader
-            Bundle bundle = new Bundle();
-            //Insert the current movie
-            bundle.putParcelable(LOADER_TOGGLE_FAVORITE, currMovie);
+                //Create a Bundle for the Loader
+                Bundle bundle = new Bundle();
+                //Insert the current movie
+                bundle.putParcelable(LOADER_TOGGLE_FAVORITE, currMovie);
 
-            //Get the LoaderManager
-            LoaderManager loaderManager = getSupportLoaderManager();
-            //Get the Loader by ID
-            android.support.v4.content.Loader<TableMovieItem> roomLoader = loaderManager.getLoader(ID_LOADER_TOGGLE_FAVORITE);
-            //If there's  no Loader,
-            if(roomLoader == null){
-                //Create it
-                loaderManager.initLoader(ID_LOADER_TOGGLE_FAVORITE, bundle, this);
-            }else{
-                //Otherwise, restart it
-                loaderManager.restartLoader(ID_LOADER_TOGGLE_FAVORITE, bundle, this);
-            }
+                //Get the LoaderManager
+                LoaderManager loaderManager = getSupportLoaderManager();
+                //Get the Loader by ID
+                android.support.v4.content.Loader<TableMovieItem> roomLoader = loaderManager.getLoader(ID_LOADER_TOGGLE_FAVORITE);
+                //If there's  no Loader,
+                if (roomLoader == null) {
+                    //Create it
+                    loaderManager.initLoader(ID_LOADER_TOGGLE_FAVORITE, bundle, this);
+                } else {
+                    //Otherwise, restart it
+                    loaderManager.restartLoader(ID_LOADER_TOGGLE_FAVORITE, bundle, this);
+                }
+                break;
         }
+        super.onOptionsItemSelected(item);
 
         return true;
     }
@@ -142,6 +157,7 @@ public class DetailActivity extends AppCompatActivity
         Picasso.get().load(movieAPIManager.getBackdropPath(movie)).into(backdropImageView);
         voteCountTextView.setText(String.valueOf(movie.getVoteCount()));
         voteAverageRatingBar.setRating(movie.getVoteAverage()/2);
+        Log.d("ratingstest", String.valueOf(movie.getVoteAverage()));
         titleTextView.setText(movie.getTitle());
         Picasso.get().load(movieAPIManager.getPosterPath(movie)).into(posterImageView);
         overviewTextView.setText(movie.getOverview());
@@ -192,18 +208,13 @@ public class DetailActivity extends AppCompatActivity
 
                     isFavorite = !isFavorite;
 
-                    //Load the Database
-                    AppDatabase favoriteDb = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, getString(R.string.favorite_movies_table_name)).build();
-                    //Get the DAO
-                    MovieDao movieDao = favoriteDb.movieDao();
-
                     if(isFavorite){
                         movieDao.insertAll(currMovie);
                     }else{
                         movieDao.delete(movieDao.findById(currMovie.getId()));
                     }
 
-                    favoriteDb.close();
+                    //favoriteDb.close();
 
                     runOnUiThread(new Runnable() {
                         @Override
@@ -244,5 +255,11 @@ public class DetailActivity extends AppCompatActivity
     public void onLoaderReset(android.support.v4.content.Loader<TableMovieItem> loader) {
 
 
+    }
+
+    @Override
+    protected void onDestroy() {
+
+        super.onDestroy();
     }
 }
