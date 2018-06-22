@@ -55,6 +55,7 @@ public class MainActivity extends AppCompatActivity
     @BindView(R.id.mainRecyclerView) RecyclerView mRecyclerView;
     @BindView(R.id.main_loading_layout) ConstraintLayout mRefreshLoadingLayout;
     @BindView(R.id.main_loading_imageview) ImageView mRefreshLoadingImageView;
+    @BindView(R.id.main_no_movies_text_layout) ConstraintLayout mNoMoviesTextLayout;
 
     //Declare the anim variable
     Animation anim;
@@ -82,12 +83,6 @@ public class MainActivity extends AppCompatActivity
 
     //Create array for storing the movies
     ArrayList<TableMovieItem> movieArray = new ArrayList<>();
-
-    //Create general use Toast
-    Toast generalToast;
-
-    //Create general use Context
-    Context mainActivityContext = this;
 
     //Current page
     private int currPage = 0;
@@ -119,6 +114,9 @@ public class MainActivity extends AppCompatActivity
             }
         };
         mRecyclerView.addOnScrollListener(mScrollListener);
+
+        //Hide the "There's no results" text
+        mNoMoviesTextLayout.setVisibility(View.INVISIBLE);
 
         //Set the room variable to the database
         favoriteDb = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, getString(R.string.favorite_movies_table_name)).build();
@@ -217,6 +215,8 @@ public class MainActivity extends AppCompatActivity
         Intent detailActivityIntent = new Intent(this, DetailActivity.class);
         //putExtra the movie selected
         detailActivityIntent.putExtra(getString(R.string.detail_intent_tag), movieArray.get(clickedItemIndex));
+
+        Log.d("ratingtest", String.valueOf(movieArray.get(clickedItemIndex).getVoteAverage()));
         //Start the Activity
         startActivity(detailActivityIntent);
     }
@@ -280,6 +280,7 @@ public class MainActivity extends AppCompatActivity
                 if(args == null){
                     this.stopLoading();
                 }
+                mNoMoviesTextLayout.setVisibility(View.INVISIBLE);
             }
 
             @Override
@@ -328,17 +329,9 @@ public class MainActivity extends AppCompatActivity
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    if(generalToast != null) {
-                        generalToast.cancel();
-                    }
-                    generalToast = Toast.makeText(
-                            mainActivityContext,
-                            "There's no movies. \n" +
-                                    "Maybe check your connection?",
-                            Toast.LENGTH_LONG);
-                    generalToast.show();
 
                     stopRefreshLoadAnimation();
+                    mNoMoviesTextLayout.setVisibility(View.VISIBLE);
 
 
                 }

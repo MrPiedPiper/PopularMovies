@@ -17,6 +17,8 @@
         <item>Rating</item>
         <item>Favorites</item>
     </string-array>
+    <!--Text for the "no movies found" text-->
+    <string name="main_no_movies_found">Hm. We couldn\'t find any movies.\nMaybe check your network connection?</string>
 
     <!--DetailActivity Toolbar items-->
 
