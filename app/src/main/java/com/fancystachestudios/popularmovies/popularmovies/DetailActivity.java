@@ -19,6 +19,7 @@ import com.fancystachestudios.popularmovies.popularmovies.MovieAPI.MovieAPIManag
 import com.fancystachestudios.popularmovies.popularmovies.MovieDBFavorites.AppDatabase;
 import com.fancystachestudios.popularmovies.popularmovies.MovieDBFavorites.MovieDao;
 import com.fancystachestudios.popularmovies.popularmovies.MovieDBFavorites.TableMovieItem;
+import com.google.common.collect.Table;
 import com.squareup.picasso.Picasso;
 
 import butterknife.BindView;
@@ -156,8 +157,7 @@ public class DetailActivity extends AppCompatActivity
         //Load all of the data from the movie object and set View data accordingly
         Picasso.get().load(movieAPIManager.getBackdropPath(movie)).into(backdropImageView);
         voteCountTextView.setText(String.valueOf(movie.getVoteCount()));
-        voteAverageRatingBar.setRating(movie.getVoteAverage()/2);
-        Log.d("ratingstest", String.valueOf(movie.getVoteAverage()));
+        voteAverageRatingBar.setRating((float)movie.getVoteAverage()/2);
         titleTextView.setText(movie.getTitle());
         Picasso.get().load(movieAPIManager.getPosterPath(movie)).into(posterImageView);
         overviewTextView.setText(movie.getOverview());
@@ -210,11 +210,13 @@ public class DetailActivity extends AppCompatActivity
 
                     if(isFavorite){
                         movieDao.insertAll(currMovie);
+
+                        TableMovieItem testMovie = movieDao.findById(currMovie.getId());
+
+                        Log.d("movieTest", String.valueOf(testMovie.getVoteAverage()));
                     }else{
                         movieDao.delete(movieDao.findById(currMovie.getId()));
                     }
-
-                    //favoriteDb.close();
 
                     runOnUiThread(new Runnable() {
                         @Override

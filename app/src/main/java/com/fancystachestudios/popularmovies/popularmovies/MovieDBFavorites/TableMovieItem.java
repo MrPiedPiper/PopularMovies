@@ -170,7 +170,7 @@ public class TableMovieItem implements Parcelable {
     }
 
     public void setVoteAverage(int newAverage){
-        this.voteAverage = newAverage;
+        this.voteAverage = newAverage * 100;
     }
 
     public int getVoteAverage(){
@@ -186,7 +186,7 @@ public class TableMovieItem implements Parcelable {
     }
 
     public void setPopularity(int newPopularity){
-        this.popularity = newPopularity;
+        this.popularity = newPopularity * 100;
     }
 
     public int getPopularity(){
