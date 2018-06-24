@@ -1,6 +1,10 @@
 package com.fancystachestudios.popularmovies.popularmovies.Utils;
 
+import android.os.Debug;
+import android.util.Log;
+
 import com.fancystachestudios.popularmovies.popularmovies.MovieAPI.MovieObject;
+import com.fancystachestudios.popularmovies.popularmovies.MovieAPI.TrailersObject;
 import com.fancystachestudios.popularmovies.popularmovies.MovieDBFavorites.TableMovieItem;
 import com.google.gson.Gson;
 
@@ -45,6 +49,25 @@ public class NetworkUtils {
      */
     public ArrayList<TableMovieItem> getMoviesFromUrl(URL url) throws IOException {
 
+        JSONObject movieJson = getJsonObjectFromUrl(url);
+
+        //Get movies from the JSONObject
+        ArrayList<TableMovieItem> movies = getMovieArrayFromJsonResults(movieJson);
+
+        //Return the movies
+        return movies;
+    }
+
+    public ArrayList<TrailersObject> getTrailersFromUrl(URL url) throws IOException {
+        JSONObject trailerJson = getJsonObjectFromUrl(url);
+        Log.d("JSONTest", trailerJson.toString());
+        ArrayList<TrailersObject> trailers = getTrailerArrayFromJsonResults(trailerJson);
+
+        return trailers;
+    }
+
+    private JSONObject getJsonObjectFromUrl(URL url) throws IOException {
+
         //Followed these instructions to learn how to use OkHttp http://www.vogella.com/tutorials/JavaLibrary-OkHttp/article.html
 
         //Get the OkHttpCliend
@@ -62,11 +85,8 @@ public class NetworkUtils {
         String resultString = response.body().string();
         //Convert the String into a JSONObject
         JSONObject baseJsonResults = stringToJsonObject(resultString);
-        //Get movies from the JSONObject
-        ArrayList<TableMovieItem> movies = getMovieArrayFromJsonResults(baseJsonResults);
 
-        //Return the movies
-        return movies;
+        return baseJsonResults;
     }
 
     /**
@@ -93,6 +113,35 @@ public class NetworkUtils {
             }
             //Return the movies ArrayList
             return movies;
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        //If it fails, return null
+        return null;
+    }
+
+    /**
+     * Function converts the JSON retrieved from themoviedb to an ArrayList of trailers
+     * @param jsonResults JSON retrieved from themoviedb
+     * @return ArrayList of TrailerObjects
+     */
+    private ArrayList<TrailersObject> getTrailerArrayFromJsonResults(JSONObject jsonResults) {
+        try {
+            //Gain access to Gson
+            Gson gson = new Gson();
+            //Get the JSONArray of trailers (Could cause JSONException)
+            JSONArray jsonArrayTrailers = jsonResults.getJSONArray("results");
+            //Make the "trailers" ArrayList
+            ArrayList<TrailersObject> trailers = new ArrayList<>();
+            //For each movie in the JSON,
+            for(int i = 0; i < jsonArrayTrailers.length(); i++){
+                //put the JSON into a TrailersObject (using Gson) (Could cause JSONException)
+                TrailersObject gsonTrailerObject = gson.fromJson(jsonArrayTrailers.get(i).toString(), TrailersObject.class);
+                //Add the movie to the ArrayList
+                trailers.add(i, gsonTrailerObject);
+            }
+            //Return the movies ArrayList
+            return trailers;
         } catch (JSONException e) {
             e.printStackTrace();
         }

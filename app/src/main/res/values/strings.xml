@@ -32,6 +32,9 @@
     <string name="backdrop_content_description">movie backdrop</string>
     <string name="detail_poster_content_description">movie poster</string>
 
+    <string name="detail_one_more_trailer">1 more trailer ►</string>
+    <string name="detail_many_more_trailers">more trailers ►</string>
+
 
     <!--Main Activity Strings-->
 

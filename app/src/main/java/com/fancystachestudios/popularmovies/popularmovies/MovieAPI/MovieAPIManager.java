@@ -8,7 +8,7 @@ import com.fancystachestudios.popularmovies.popularmovies.MovieDBFavorites.Table
 
 public class MovieAPIManager {
 
-    //API key
+    //API key 
     static String KEY = "Your API key goes here";
 
 
@@ -30,6 +30,21 @@ public class MovieAPIManager {
     public static String POPULARITY = "popular";
     public static String RATING = "top_rated";
 
+    //String base for the Youtube URL
+    private static String YOUTUBE_BASE = "https://www.youtube.com/watch?v=";
+
+    //String base for the thumbnail path URL
+    private static String THUMBNAIL_BASE1 = "https://img.youtube.com/vi/";
+    //2 is the id
+    private static String THUMBNAIL_BASE3 = "/hqdefault.jpg";
+
+    //String base for the trailer list path URL
+    private static String TRAILER_BASE1 = "https://api.themoviedb.org/3/movie/";
+    //2 is the id
+    private static String TRAILER_BASE3 = "/videos?api_key=";
+    //4 is the API key
+    private static String TRAILER_BASE5 = "&language=en-US";
+
     //Function returns path to movie JSON by sort path and page number
     public String getPathToMoviePage(String sortTypeString, int pageNumber){
         String returnString = PART1 + sortTypeString + PART3 + KEY + PART5 + pageNumber;
@@ -41,9 +56,25 @@ public class MovieAPIManager {
         return IMAGE_BASE_185 + movie.getPosterPath();
     }
 
-    //Method returns path the the backdrop image
+    //Method returns path to the backdrop image
     public String getBackdropPath(TableMovieItem movie){
         return IMAGE_BASE_780 + movie.getBackdropPath();
     }
+
+    //Method returns path to the trailer JSON
+    public String getTrailerListPath(int movieId){
+        return TRAILER_BASE1 + movieId + TRAILER_BASE3 + KEY + TRAILER_BASE5;
+    }
+
+    //Get path to Youtube video
+    public String getYoutubeFromKey(String youtubeKey){
+        return YOUTUBE_BASE + youtubeKey;
+    }
+
+    public String getVideoThumbnailPath(String videoKey){
+        return THUMBNAIL_BASE1 + videoKey + THUMBNAIL_BASE3;
+    }
+
+
 
 }
