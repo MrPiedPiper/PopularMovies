@@ -13,7 +13,8 @@
     <android.support.constraint.ConstraintLayout
         android:id="@+id/detail_root_layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp">
 
         <ImageView
             android:contentDescription="@string/backdrop_content_description"
@@ -146,61 +147,57 @@
             tool:layout_height="200dp">
 
             <ImageView
+                android:contentDescription="@string/detail_trailer_image_content_description"
                 android:id="@+id/detail_trailer_image"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 app:layout_constraintEnd_toEndOf="@+id/detail_video_layout"
                 app:layout_constraintStart_toStartOf="@+id/detail_video_layout"
                 tool:background="@mipmap/ic_launcher"
-                android:adjustViewBounds="true"/>
+                android:scaleType="centerCrop"
+                android:adjustViewBounds="true"
+                android:onClick="playTrailerOnClick"/>
 
-            <android.support.constraint.ConstraintLayout
-                android:id="@+id/detail_trailer_text_layout"
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:background="@color/colorPrimary"
+                android:src="@drawable/ic_play"
+                android:text="@string/detail_trailer_image_overlay_play"
+                app:layout_constraintEnd_toEndOf="@id/detail_trailer_image"
+                app:layout_constraintStart_toStartOf="@id/detail_trailer_image"
+                app:layout_constraintTop_toTopOf="@id/detail_trailer_image"
+                app:layout_constraintBottom_toBottomOf="@id/detail_trailer_image" />
+
+            <TextView
+                android:id="@+id/detail_trailer_title_textview"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:padding="4dp"
                 android:background="@color/colorPrimary"
-                app:layout_constraintBottom_toBottomOf="@+id/detail_trailer_image"
-                app:layout_constraintEnd_toEndOf="@+id/detail_trailer_image"
+                android:textColor="@color/textviewTextColor"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/detail_trailer_title_textview"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="4dp"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="8dp"
-                    android:textColor="@color/textviewTextColor"
-                    tool:text="title"
-                    app:layout_constraintBottom_toTopOf="@+id/detail_trailer_divider_view"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    android:layout_marginLeft="8dp" />
-
-                <View
-                    android:id="@+id/detail_trailer_divider_view"
-                    android:layout_width="wrap_content"
-                    android:layout_height="3dp"
-                    android:background="@color/colorPrimaryDark"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent" />
-
-            </android.support.constraint.ConstraintLayout>
-
+                app:layout_constraintTop_toBottomOf="@id/detail_trailer_image"
+                tool:text="title" />
 
             <Button
                 android:onClick="openMoreTrailers"
                 android:textColor="@color/textviewTextColor"
-                tool:text="@string/detail_one_more_trailer"
+                tool:text="1 more trailer"
                 android:id="@+id/detail_more_trailers"
+                android:layout_marginTop="4dp"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:background="@color/colorPrimary"
                 app:layout_constraintEnd_toEndOf="@+id/detail_video_layout"
                 app:layout_constraintStart_toStartOf="@+id/detail_video_layout"
-                app:layout_constraintTop_toBottomOf="@+id/detail_trailer_image" />
+                app:layout_constraintTop_toBottomOf="@+id/detail_trailer_title_textview" />
 
 
         </android.support.constraint.ConstraintLayout>

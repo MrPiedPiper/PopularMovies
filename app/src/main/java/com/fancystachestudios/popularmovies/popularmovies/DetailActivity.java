@@ -2,8 +2,8 @@ package com.fancystachestudios.popularmovies.popularmovies;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.Loader;
-import android.media.Image;
+import android.content.res.Resources;
+import android.net.Uri;
 import android.support.v4.app.LoaderManager;
 import android.arch.persistence.room.Room;
 import android.content.Intent;
@@ -14,6 +14,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
@@ -24,12 +26,9 @@ import com.fancystachestudios.popularmovies.popularmovies.MovieDBFavorites.AppDa
 import com.fancystachestudios.popularmovies.popularmovies.MovieDBFavorites.MovieDao;
 import com.fancystachestudios.popularmovies.popularmovies.MovieDBFavorites.TableMovieItem;
 import com.fancystachestudios.popularmovies.popularmovies.Utils.NetworkUtils;
-import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.Table;
 import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -52,9 +51,11 @@ public class DetailActivity extends AppCompatActivity{
     @BindView(R.id.detail_overview)TextView overviewTextView;
     @BindView(R.id.detail_release_date)TextView releaseDateTextView;
 
-    @BindView(R.id.detail_trailer_image)ImageView trailerImageView;
+    @BindView(R.id.detail_trailer_image)ImageView trailerThumbnailImageView;
+    @BindView(R.id.detail_trailer_title_textview)TextView trailerTitleTextView;
+    @BindView(R.id.detail_more_trailers)Button trailerMoreTrailersButton;
 
-    Context currContex;
+    Context currContext;
 
     //Create the Loader
     private LoaderManager.LoaderCallbacks<TableMovieItem> tableMovieItemLoader;
@@ -69,15 +70,14 @@ public class DetailActivity extends AppCompatActivity{
     private static final int ID_LOADER_TOGGLE_FAVORITE = 24;
 
 
-    //Create the Trailer Loader
-    private LoaderManager.LoaderCallbacks<ArrayList<TrailersObject>> trailerLoader;
-
     //Constant to save the table being queried by the Loader
     private static final String LOADER_TRAILER_LOAD = "trailer load";
     //Table loader ID
     private static final int ID_LOADER_TRAILER_LOAD = 25;
     //Create the Trailer Arraylist
-    ArrayList<TrailersObject> currTrailers;
+    ArrayList<TrailersObject> allTrailers;
+    //Create the current Trailer
+    TrailersObject currTrailer;
 
     //Get access to the movieAPIManager
     private MovieAPIManager movieAPIManager = new MovieAPIManager();
@@ -102,7 +102,7 @@ public class DetailActivity extends AppCompatActivity{
         ButterKnife.bind(this);
 
         //Set the context variable
-        currContex = this;
+        currContext = this;
 
         //Retrieve the movie selected to open the DetailActivity
         Intent intent = getIntent();
@@ -215,72 +215,7 @@ public class DetailActivity extends AppCompatActivity{
             }
         };
 
-
-        //Set the tableMovieItemLoader Loader
-        trailerLoader = new LoaderManager.LoaderCallbacks<ArrayList<TrailersObject>>() {
-            @SuppressLint("StaticFieldLeak")
-            @Override
-            public android.support.v4.content.Loader<ArrayList<TrailersObject>> onCreateLoader(int id, final Bundle args) {
-                return new android.support.v4.content.AsyncTaskLoader<ArrayList<TrailersObject>>(getBaseContext()){
-
-                        @Override
-                        protected void onStartLoading() {
-                            Log.d("Loadertest", "onStartLoading");
-                            super.onStartLoading();
-                            forceLoad();
-                        }
-
-                        @Override
-                        public ArrayList<TrailersObject> loadInBackground() {
-                            Log.d("Loadertest", "loadInBackground");
-                            ArrayList<TrailersObject> retrievedTrailers = null;
-                            try {
-                                URL trailerUrl = new URL(movieAPIManager.getTrailerListPath(currMovie.getId()));
-                                retrievedTrailers = networkUtils.getTrailersFromUrl(trailerUrl);
-                            } catch (MalformedURLException e) {
-                                e.printStackTrace();
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
-
-                            return retrievedTrailers;
-
-                        }
-
-
-                    };
-            }
-
-            @Override
-            public void onLoadFinished(android.support.v4.content.Loader<ArrayList<TrailersObject>> loader, ArrayList<TrailersObject> trailersObjects) {
-                if(trailersObjects != null){
-                    currTrailers = trailersObjects;
-                    Picasso.get().load(movieAPIManager.getVideoThumbnailPath(currTrailers.get(0).getKey())).into(trailerImageView);
-                }
-                Log.d("LoaderTest", "trailerobjects is " + (trailersObjects == null) + " null");
-                Log.d("LoaderTest", movieAPIManager.getVideoThumbnailPath(currTrailers.get(0).getKey()));
-                Log.d("Loadertest", "onLoadFinished");
-            }
-
-            @Override
-            public void onLoaderReset(android.support.v4.content.Loader<ArrayList<TrailersObject>> loader) {
-
-            }
-        };
-
-        //Get the LoaderManager
-        LoaderManager loaderManager = getSupportLoaderManager();
-        //Get the trailer Loader by ID
-        android.support.v4.content.Loader<ArrayList<TrailersObject>> roomLoader = loaderManager.getLoader(ID_LOADER_TRAILER_LOAD);
-        //If there's  no Loader,
-        if(roomLoader == null){
-            //Create it
-            loaderManager.initLoader(ID_LOADER_TRAILER_LOAD, null, trailerLoader);
-        }else{
-            //Otherwise, restart it
-            loaderManager.destroyLoader(ID_LOADER_TRAILER_LOAD);
-            loaderManager.initLoader(ID_LOADER_TRAILER_LOAD, null, trailerLoader);
-        }
+        setTrailerViews();
     }
 
     @Override
@@ -361,5 +296,107 @@ public class DetailActivity extends AppCompatActivity{
         Picasso.get().load(movieAPIManager.getPosterPath(movie)).into(posterImageView);
         overviewTextView.setText(movie.getOverview());
         releaseDateTextView.setText(movie.getReleaseDate());
+    }
+
+    //Function sets the attributes of the trailer Views based on trailer data
+    private void setTrailerViews(){
+
+        //Create and set the tableMovieItemLoader Loader
+        LoaderManager.LoaderCallbacks<ArrayList<TrailersObject>> trailerLoader = new LoaderManager.LoaderCallbacks<ArrayList<TrailersObject>>() {
+            @SuppressLint("StaticFieldLeak")
+            @Override
+            public android.support.v4.content.Loader<ArrayList<TrailersObject>> onCreateLoader(int id, final Bundle args) {
+                return new android.support.v4.content.AsyncTaskLoader<ArrayList<TrailersObject>>(getBaseContext()) {
+
+                    @Override
+                    protected void onStartLoading() {
+                        Log.d("Loadertest", "onStartLoading");
+                        super.onStartLoading();
+                        forceLoad();
+                    }
+
+                    @Override
+                    public ArrayList<TrailersObject> loadInBackground() {
+                        Log.d("Loadertest", "loadInBackground");
+                        ArrayList<TrailersObject> retrievedTrailers = null;
+                        try {
+                            URL trailerUrl = new URL(movieAPIManager.getTrailerListPath(currMovie.getId()));
+                            retrievedTrailers = networkUtils.getTrailersFromUrl(trailerUrl);
+                        } catch (MalformedURLException e) {
+                            e.printStackTrace();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+
+                        return retrievedTrailers;
+
+                    }
+
+
+                };
+            }
+
+            @Override
+            public void onLoadFinished(android.support.v4.content.Loader<ArrayList<TrailersObject>> loader, ArrayList<TrailersObject> trailerObjects) {
+                if (trailerObjects != null && trailerObjects.size() > 0) {
+                    //Set the curTrailers to the trailerObjects
+                    allTrailers = trailerObjects;
+                    //Loop through all available trailers
+                    for(TrailersObject currTrailer : trailerObjects){
+                        Log.d("trailerLoop", currTrailer.getType());
+                        //If one is of the type "Trailer",
+                        if(currTrailer.getType().equals("Trailer")){
+                            //Set the Trailer to that and escape the loop
+                            setViewsWithTrailer(currTrailer);
+                            break;
+                        }
+                    }
+                    //If one isn't found, set the trailer to the first available trailer
+                    if(trailerTitleTextView.getText() == ""){
+                        setViewsWithTrailer(trailerObjects.get(0));
+                    }
+
+                }
+            }
+
+            @Override
+            public void onLoaderReset(android.support.v4.content.Loader<ArrayList<TrailersObject>> loader) {
+
+            }
+        };
+
+        //Get the LoaderManager
+        LoaderManager loaderManager = getSupportLoaderManager();
+        //Get the trailer Loader by ID
+        android.support.v4.content.Loader<ArrayList<TrailersObject>> roomLoader = loaderManager.getLoader(ID_LOADER_TRAILER_LOAD);
+        //If there's  no Loader,
+        if(roomLoader == null){
+            //Create it
+            loaderManager.initLoader(ID_LOADER_TRAILER_LOAD, null, trailerLoader);
+        }else{
+            //Otherwise, restart it
+            loaderManager.destroyLoader(ID_LOADER_TRAILER_LOAD);
+            loaderManager.initLoader(ID_LOADER_TRAILER_LOAD, null, trailerLoader);
+        }
+    }
+
+    private void setViewsWithTrailer(TrailersObject trailer){
+        currTrailer = trailer;
+
+        Picasso.get().load(movieAPIManager.getVideoThumbnailPath(trailer.getKey())).into(trailerThumbnailImageView);
+
+        trailerTitleTextView.setText(trailer.getName());
+
+        Resources res = getResources();
+        trailerMoreTrailersButton.setText(res.getQuantityString(R.plurals.detail_more_trailers, allTrailers.size(), allTrailers.size()));
+    }
+
+    public void playTrailerOnClick(View view){
+        Log.d("Play trailer", movieAPIManager.getYoutubeFromKey(currTrailer.getKey()));
+        Log.d("Play trailer", "Play trailer");
+
+        String youtubeAddress = movieAPIManager.getYoutubeFromKey(currTrailer.getKey());
+        Intent youtubeIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(youtubeAddress));
+        startActivity(youtubeIntent);
     }
 }

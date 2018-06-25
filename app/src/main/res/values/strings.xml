@@ -31,9 +31,10 @@
     <!--Content Descriptions for the ImageViews-->
     <string name="backdrop_content_description">movie backdrop</string>
     <string name="detail_poster_content_description">movie poster</string>
+    
+    <string name="detail_trailer_image_content_description">trailer thumbnail</string>
 
-    <string name="detail_one_more_trailer">1 more trailer ►</string>
-    <string name="detail_many_more_trailers">more trailers ►</string>
+    <string name="detail_trailer_image_overlay_play">►</string>
 
 
     <!--Main Activity Strings-->

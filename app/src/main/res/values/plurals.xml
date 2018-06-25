@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!--Detail activity trailer button-->
+    <plurals name="detail_more_trailers">
+        <item quantity="one">%d more trailer</item>
+        <item quantity="other">%d more trailers</item>
+    </plurals>
+
+</resources>
