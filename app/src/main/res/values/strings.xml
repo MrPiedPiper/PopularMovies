@@ -31,10 +31,13 @@
     <!--Content Descriptions for the ImageViews-->
     <string name="backdrop_content_description">movie backdrop</string>
     <string name="detail_poster_content_description">movie poster</string>
-    
-    <string name="detail_trailer_image_content_description">trailer thumbnail</string>
+
+    <string name="trailer_thumbnail_content_description">trailer thumbnail</string>
 
     <string name="detail_trailer_image_overlay_play">►</string>
+
+    <!--more trailers intent extra data key-->
+    <string name="detail_more_trailers_intent_extra_key">moreTrailers</string>
 
 
     <!--Main Activity Strings-->

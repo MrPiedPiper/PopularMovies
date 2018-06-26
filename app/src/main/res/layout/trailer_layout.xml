@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tool="http://schemas.android.com/tools"
+    android:background="@color/colorPrimaryLight"
+    android:padding="4dp"
+    android:layout_marginBottom="4dp"
+    android:layout_marginTop="4dp"
+    android:id="@+id/trailer_layout">
+
+    <ImageView
+        android:contentDescription="@string/trailer_thumbnail_content_description"
+        android:id="@+id/trailer_thumbnail"
+        android:minHeight="270dp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="@+id/trailer_layout"
+        app:layout_constraintStart_toStartOf="@+id/trailer_layout"
+        tool:background="@mipmap/ic_launcher"
+        android:scaleType="centerCrop"
+        android:adjustViewBounds="true"/>
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:background="@color/colorPrimary"
+        android:src="@drawable/ic_play"
+        android:text="@string/detail_trailer_image_overlay_play"
+        app:layout_constraintEnd_toEndOf="@id/trailer_thumbnail"
+        app:layout_constraintStart_toStartOf="@id/trailer_thumbnail"
+        app:layout_constraintTop_toTopOf="@id/trailer_thumbnail"
+        app:layout_constraintBottom_toBottomOf="@id/trailer_thumbnail" />
+
+    <TextView
+        android:id="@+id/trailer_title_textview"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:padding="4dp"
+        android:background="@color/colorPrimary"
+        android:textColor="@color/textviewTextColor"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/trailer_thumbnail"
+        tool:text="title" />
+
+
+
+</android.support.constraint.ConstraintLayout>

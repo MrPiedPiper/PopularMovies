@@ -32,7 +32,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
     private MovieAPIManager movieAPIManager = new MovieAPIManager();
     //Get the MovieClickListener
     final private MovieClickListener mMovieClickListener;
-    //Set the Context variable
+    //Set the Context variable/
     Context currContext;
 
     //Create the ViewHolder for the RecyclerView (With an OnClickListener)

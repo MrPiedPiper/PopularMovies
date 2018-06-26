@@ -35,6 +35,7 @@
             android:layout_marginEnd="8dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="112dp"
+            android:paddingBottom="8dp"
             android:background="@color/colorPrimaryDark"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -114,6 +115,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
+            android:paddingBottom="8dp"
             android:textColor="#FFF"
             app:layout_constraintStart_toStartOf="@+id/detail_overview"
             app:layout_constraintTop_toBottomOf="@+id/detail_overview"
@@ -141,53 +143,23 @@
             android:layout_marginEnd="8dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
             app:layout_constraintEnd_toEndOf="@+id/view"
             app:layout_constraintStart_toStartOf="@+id/view"
             app:layout_constraintTop_toBottomOf="@+id/detail_release_date"
+            app:layout_constraintBottom_toBottomOf="@id/view"
             tool:layout_height="200dp">
 
-            <ImageView
-                android:contentDescription="@string/detail_trailer_image_content_description"
-                android:id="@+id/detail_trailer_image"
+            <include
+                android:id="@+id/trailer_layout"
+                layout="@layout/trailer_layout"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                app:layout_constraintEnd_toEndOf="@+id/detail_video_layout"
-                app:layout_constraintStart_toStartOf="@+id/detail_video_layout"
-                tool:background="@mipmap/ic_launcher"
-                android:scaleType="centerCrop"
-                android:adjustViewBounds="true"
-                android:onClick="playTrailerOnClick"/>
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginBottom="8dp"
-                android:background="@color/colorPrimary"
-                android:src="@drawable/ic_play"
-                android:text="@string/detail_trailer_image_overlay_play"
-                app:layout_constraintEnd_toEndOf="@id/detail_trailer_image"
-                app:layout_constraintStart_toStartOf="@id/detail_trailer_image"
-                app:layout_constraintTop_toTopOf="@id/detail_trailer_image"
-                app:layout_constraintBottom_toBottomOf="@id/detail_trailer_image" />
-
-            <TextView
-                android:id="@+id/detail_trailer_title_textview"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:padding="4dp"
-                android:background="@color/colorPrimary"
-                android:textColor="@color/textviewTextColor"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/detail_trailer_image"
-                tool:text="title" />
+                app:layout_constraintStart_toStartOf="parent" />
 
             <Button
-                android:onClick="openMoreTrailers"
+                android:onClick="moreTrailersOnClick"
                 android:textColor="@color/textviewTextColor"
                 tool:text="1 more trailer"
                 android:id="@+id/detail_more_trailers"
@@ -197,7 +169,7 @@
                 android:background="@color/colorPrimary"
                 app:layout_constraintEnd_toEndOf="@+id/detail_video_layout"
                 app:layout_constraintStart_toStartOf="@+id/detail_video_layout"
-                app:layout_constraintTop_toBottomOf="@+id/detail_trailer_title_textview" />
+                app:layout_constraintTop_toBottomOf="@+id/trailer_layout" />
 
 
         </android.support.constraint.ConstraintLayout>

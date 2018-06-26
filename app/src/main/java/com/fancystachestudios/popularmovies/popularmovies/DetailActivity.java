@@ -3,7 +3,9 @@ package com.fancystachestudios.popularmovies.popularmovies;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.drawable.DrawableContainer;
 import android.net.Uri;
+import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.LoaderManager;
 import android.arch.persistence.room.Room;
 import android.content.Intent;
@@ -26,6 +28,7 @@ import com.fancystachestudios.popularmovies.popularmovies.MovieDBFavorites.AppDa
 import com.fancystachestudios.popularmovies.popularmovies.MovieDBFavorites.MovieDao;
 import com.fancystachestudios.popularmovies.popularmovies.MovieDBFavorites.TableMovieItem;
 import com.fancystachestudios.popularmovies.popularmovies.Utils.NetworkUtils;
+import com.google.common.collect.Table;
 import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
@@ -51,9 +54,10 @@ public class DetailActivity extends AppCompatActivity{
     @BindView(R.id.detail_overview)TextView overviewTextView;
     @BindView(R.id.detail_release_date)TextView releaseDateTextView;
 
-    @BindView(R.id.detail_trailer_image)ImageView trailerThumbnailImageView;
-    @BindView(R.id.detail_trailer_title_textview)TextView trailerTitleTextView;
+    @BindView(R.id.trailer_thumbnail)ImageView trailerThumbnailImageView;
+    @BindView(R.id.trailer_title_textview)TextView trailerTitleTextView;
     @BindView(R.id.detail_more_trailers)Button trailerMoreTrailersButton;
+    @BindView(R.id.detail_video_layout)ConstraintLayout videoLayoutConstraint;
 
     Context currContext;
 
@@ -108,12 +112,11 @@ public class DetailActivity extends AppCompatActivity{
         Intent intent = getIntent();
         currMovie = (TableMovieItem) intent.getParcelableExtra(getString(R.string.detail_intent_tag));
 
+        trailerMoreTrailersButton.setVisibility(View.GONE);
+        videoLayoutConstraint.setVisibility(View.GONE);
+
         //Set the views to the data from the movie
         setViewsWithMovie(currMovie);
-
-        //Set the trailer thumbnail
-        //Picasso.get().load(movieAPIManager.getVideoThumbnailPath(currMovie.))
-        Log.d("movieId", String.valueOf(currMovie.getId()));
 
         //Open up the database
         favoriteDb = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, getString(R.string.favorite_movies_table_name)).build();
@@ -215,7 +218,15 @@ public class DetailActivity extends AppCompatActivity{
             }
         };
 
+        trailerThumbnailImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                playTrailer();
+            }
+        });
+
         setTrailerViews();
+
     }
 
     @Override
@@ -338,24 +349,23 @@ public class DetailActivity extends AppCompatActivity{
 
             @Override
             public void onLoadFinished(android.support.v4.content.Loader<ArrayList<TrailersObject>> loader, ArrayList<TrailersObject> trailerObjects) {
-                if (trailerObjects != null && trailerObjects.size() > 0) {
+                if(trailerObjects != null && trailerObjects.size() > 0){
+                    videoLayoutConstraint.setVisibility(View.VISIBLE);
                     //Set the curTrailers to the trailerObjects
                     allTrailers = trailerObjects;
                     //Loop through all available trailers
-                    for(TrailersObject currTrailer : trailerObjects){
-                        Log.d("trailerLoop", currTrailer.getType());
+                    for (TrailersObject currTrailer : trailerObjects) {
                         //If one is of the type "Trailer",
-                        if(currTrailer.getType().equals("Trailer")){
+                        if (currTrailer.getType().equals("Trailer")) {
                             //Set the Trailer to that and escape the loop
                             setViewsWithTrailer(currTrailer);
                             break;
                         }
                     }
                     //If one isn't found, set the trailer to the first available trailer
-                    if(trailerTitleTextView.getText() == ""){
+                    if (trailerTitleTextView.getText() == "") {
                         setViewsWithTrailer(trailerObjects.get(0));
                     }
-
                 }
             }
 
@@ -387,16 +397,25 @@ public class DetailActivity extends AppCompatActivity{
 
         trailerTitleTextView.setText(trailer.getName());
 
-        Resources res = getResources();
-        trailerMoreTrailersButton.setText(res.getQuantityString(R.plurals.detail_more_trailers, allTrailers.size(), allTrailers.size()));
+        if(allTrailers.size() > 1){
+            trailerMoreTrailersButton.setVisibility(View.VISIBLE);
+            Resources res = getResources();
+            trailerMoreTrailersButton.setText(res.getQuantityString(R.plurals.detail_more_trailers, allTrailers.size()-1, allTrailers.size()-1));
+        }
     }
 
-    public void playTrailerOnClick(View view){
+    public void playTrailer(){
         Log.d("Play trailer", movieAPIManager.getYoutubeFromKey(currTrailer.getKey()));
         Log.d("Play trailer", "Play trailer");
 
         String youtubeAddress = movieAPIManager.getYoutubeFromKey(currTrailer.getKey());
         Intent youtubeIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(youtubeAddress));
         startActivity(youtubeIntent);
+    }
+
+    public void moreTrailersOnClick(View view){
+        Intent moreTrailersIntent = new Intent(this, MoreTrailersActivity.class);
+        moreTrailersIntent.putExtra(getString(R.string.detail_more_trailers_intent_extra_key), allTrailers);
+        startActivity(moreTrailersIntent);
     }
 }
