@@ -1,10 +1,10 @@
 package com.fancystachestudios.popularmovies.popularmovies.Utils;
 
-import android.os.Debug;
 import android.util.Log;
 
 import com.fancystachestudios.popularmovies.popularmovies.MovieAPI.MovieObject;
-import com.fancystachestudios.popularmovies.popularmovies.MovieAPI.TrailersObject;
+import com.fancystachestudios.popularmovies.popularmovies.MovieAPI.ReviewObject;
+import com.fancystachestudios.popularmovies.popularmovies.MovieAPI.TrailerObject;
 import com.fancystachestudios.popularmovies.popularmovies.MovieDBFavorites.TableMovieItem;
 import com.google.gson.Gson;
 
@@ -58,12 +58,18 @@ public class NetworkUtils {
         return movies;
     }
 
-    public ArrayList<TrailersObject> getTrailersFromUrl(URL url) throws IOException {
+    public ArrayList<TrailerObject> getTrailersFromUrl(URL url) throws IOException {
         JSONObject trailerJson = getJsonObjectFromUrl(url);
         Log.d("JSONTest", trailerJson.toString());
-        ArrayList<TrailersObject> trailers = getTrailerArrayFromJsonResults(trailerJson);
+        ArrayList<TrailerObject> trailers = getTrailerArrayFromJsonResults(trailerJson);
 
         return trailers;
+    }
+
+    public ArrayList<ReviewObject> getReviewsFromUrl(URL url) throws IOException {
+        JSONObject reviewJson = getJsonObjectFromUrl(url);
+        ArrayList<ReviewObject> reviews = getReviewArrayFromJsonResults(reviewJson);
+        return reviews;
     }
 
     private JSONObject getJsonObjectFromUrl(URL url) throws IOException {
@@ -125,23 +131,47 @@ public class NetworkUtils {
      * @param jsonResults JSON retrieved from themoviedb
      * @return ArrayList of TrailerObjects
      */
-    private ArrayList<TrailersObject> getTrailerArrayFromJsonResults(JSONObject jsonResults) {
+    private ArrayList<TrailerObject> getTrailerArrayFromJsonResults(JSONObject jsonResults) {
         try {
             //Gain access to Gson
             Gson gson = new Gson();
             //Get the JSONArray of trailers (Could cause JSONException)
             JSONArray jsonArrayTrailers = jsonResults.getJSONArray("results");
             //Make the "trailers" ArrayList
-            ArrayList<TrailersObject> trailers = new ArrayList<>();
+            ArrayList<TrailerObject> trailers = new ArrayList<>();
             //For each movie in the JSON,
             for(int i = 0; i < jsonArrayTrailers.length(); i++){
-                //put the JSON into a TrailersObject (using Gson) (Could cause JSONException)
-                TrailersObject gsonTrailerObject = gson.fromJson(jsonArrayTrailers.get(i).toString(), TrailersObject.class);
+                //put the JSON into a TrailerObject (using Gson) (Could cause JSONException)
+                TrailerObject gsonTrailerObject = gson.fromJson(jsonArrayTrailers.get(i).toString(), TrailerObject.class);
                 //Add the movie to the ArrayList
                 trailers.add(i, gsonTrailerObject);
             }
             //Return the movies ArrayList
             return trailers;
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        //If it fails, return null
+        return null;
+    }
+
+    private ArrayList<ReviewObject> getReviewArrayFromJsonResults(JSONObject jsonResults){
+        try {
+            //Gain access to Gson
+            Gson gson = new Gson();
+            //Get the JSONArray of trailers (Could cause JSONException)
+            JSONArray jsonArrayReviews = jsonResults.getJSONArray("results");
+            //Make the "trailers" ArrayList
+            ArrayList<ReviewObject> reviews = new ArrayList<>();
+            //For each movie in the JSON,
+            for(int i = 0; i < jsonArrayReviews.length(); i++){
+                //put the JSON into a TrailerObject (using Gson) (Could cause JSONException)
+                ReviewObject gsonReviewObject = gson.fromJson(jsonArrayReviews.get(i).toString(), ReviewObject.class);
+                //Add the movie to the ArrayList
+                reviews.add(i, gsonReviewObject);
+            }
+            //Return the movies ArrayList
+            return reviews;
         } catch (JSONException e) {
             e.printStackTrace();
         }

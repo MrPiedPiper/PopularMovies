@@ -38,6 +38,8 @@
 
     <!--more trailers intent extra data key-->
     <string name="detail_more_trailers_intent_extra_key">moreTrailers</string>
+    <!--all reviews intent extra data key-->
+    <string name="detail_all_reviews_intent_extra_key">allReviews</string>
 
 
     <!--Main Activity Strings-->

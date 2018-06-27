@@ -1,12 +1,13 @@
 package com.fancystachestudios.popularmovies.popularmovies.Utils;
 
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
 public abstract class EndlessScrollListener extends android.support.v7.widget.RecyclerView.OnScrollListener{
 
     //Declare variables
-    private GridLayoutManager mLayoutManager;
+    private RecyclerView.LayoutManager mLayoutManager;
     private int currItemCount;
     private int previousItemCount;
     private int howManyScreensBuffered = 3;
@@ -14,20 +15,36 @@ public abstract class EndlessScrollListener extends android.support.v7.widget.Re
     private boolean loading = true;
 
     //Constructor sets the mLayoutManager and currItemCount variables
-    protected EndlessScrollListener(GridLayoutManager mLayoutManager){
+    protected EndlessScrollListener(RecyclerView.LayoutManager mLayoutManager){
         this.mLayoutManager = mLayoutManager;
     }
 
     @Override
     public void onScrolled(RecyclerView recyclerView, int horizontalScrollAmount, int verticalScrollAmount) {
-        //Get the amount of views on screen
-        int onScreenItemCount = mLayoutManager.findLastVisibleItemPosition() - mLayoutManager.findFirstVisibleItemPosition();
+
+        int onScreenItemCount = 0;
+        if(mLayoutManager instanceof GridLayoutManager){
+            //Get the amount of views on screen
+            onScreenItemCount = ((GridLayoutManager)mLayoutManager).findLastVisibleItemPosition() - ((GridLayoutManager)mLayoutManager).findFirstVisibleItemPosition();
+        }else if(mLayoutManager instanceof LinearLayoutManager){
+            //Get the amount of views on screen
+            onScreenItemCount = ((LinearLayoutManager)mLayoutManager).findLastVisibleItemPosition() - ((LinearLayoutManager)mLayoutManager).findFirstVisibleItemPosition();
+        }
+
         //Set the distanceToBottomForRefresh to the amount on screen * how many screens should be buffered
         distanceToBottomForRefresh = onScreenItemCount * howManyScreensBuffered;
         //Set the currentItemCount to the current item count in the GridLayoutManager
         this.currItemCount = mLayoutManager.getItemCount();
-        //Set the distanceToBottom to the currItemCount - the position of the last visible item on-screen
-        int distanceToBottom = currItemCount - mLayoutManager.findLastVisibleItemPosition();
+
+        int distanceToBottom = 0;
+        if(mLayoutManager instanceof GridLayoutManager){
+            //Set the distanceToBottom to the currItemCount - the position of the last visible item on-screen
+            distanceToBottom = currItemCount - ((GridLayoutManager)mLayoutManager).findLastVisibleItemPosition();
+        }else if(mLayoutManager instanceof LinearLayoutManager){
+            //Set the distanceToBottom to the currItemCount - the position of the last visible item on-screen
+            distanceToBottom = currItemCount - ((LinearLayoutManager)mLayoutManager).findLastVisibleItemPosition();
+        }
+
         //If we're not currently loading anything, and the buffer distance allows it,
         if(!loading && distanceToBottom <= distanceToBottomForRefresh){
             //Set loading to true

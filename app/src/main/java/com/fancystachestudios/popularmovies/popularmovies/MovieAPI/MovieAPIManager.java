@@ -1,5 +1,7 @@
 package com.fancystachestudios.popularmovies.popularmovies.MovieAPI;
 
+import android.util.Log;
+
 import com.fancystachestudios.popularmovies.popularmovies.MovieDBFavorites.TableMovieItem;
 
 /**
@@ -8,17 +10,20 @@ import com.fancystachestudios.popularmovies.popularmovies.MovieDBFavorites.Table
 
 public class MovieAPIManager {
 
-    //API key 
+    //API key
     static String KEY = "Your API key goes here";
+
+    //Movie URL base
+    static String MOVIE_BASE = "http://api.themoviedb.org/3/movie/";
+    //English and page base
+    static String ENG_AND_PAGE = "&language=en-US&page=";
 
 
     //URL to movie list
-
-    static String PART1 = "http://api.themoviedb.org/3/movie/";
+    //part 1 is MOVIE_BASE
     //part 2 is the sort type
     static String PART3 = "?api_key=";
     //part 4 is the api key
-    static String PART5 = "&language=en-US&page=";
     //part 6 is the page number
 
 
@@ -39,15 +44,23 @@ public class MovieAPIManager {
     private static String THUMBNAIL_BASE3 = "/hqdefault.jpg";
 
     //String base for the trailer list path URL
-    private static String TRAILER_BASE1 = "https://api.themoviedb.org/3/movie/";
+    //part 1 is MOVIE_BASE
     //2 is the id
     private static String TRAILER_BASE3 = "/videos?api_key=";
     //4 is the API key
     private static String TRAILER_BASE5 = "&language=en-US";
 
+    //String base for the Review list path URL
+    //part 1 is MOVIE_BASE
+    //part 2 is the movie ID
+    private static String REVIEW_BASE3 = "/reviews?api_key=";
+    //part 3 is the API Key
+    //part 4 is the ENG_AND_PAGE
+    //part 5 is the page #
+
     //Function returns path to movie JSON by sort path and page number
     public String getPathToMoviePage(String sortTypeString, int pageNumber){
-        String returnString = PART1 + sortTypeString + PART3 + KEY + PART5 + pageNumber;
+        String returnString = MOVIE_BASE + sortTypeString + PART3 + KEY + ENG_AND_PAGE + pageNumber;
         return returnString;
     }
 
@@ -63,7 +76,7 @@ public class MovieAPIManager {
 
     //Method returns path to the trailer JSON
     public String getTrailerListPath(int movieId){
-        return TRAILER_BASE1 + movieId + TRAILER_BASE3 + KEY + TRAILER_BASE5;
+        return MOVIE_BASE + movieId + TRAILER_BASE3 + KEY + TRAILER_BASE5;
     }
 
     //Get path to Youtube video
@@ -72,7 +85,13 @@ public class MovieAPIManager {
     }
 
     public String getVideoThumbnailPath(String videoKey){
+        Log.d("test", THUMBNAIL_BASE1 + videoKey + THUMBNAIL_BASE3);
         return THUMBNAIL_BASE1 + videoKey + THUMBNAIL_BASE3;
+    }
+
+    public String getReviewPath(int movieID, int pageNum){
+        Log.d("test", MOVIE_BASE + movieID + REVIEW_BASE3 + KEY + ENG_AND_PAGE + pageNum);
+        return MOVIE_BASE + movieID + REVIEW_BASE3 + KEY + ENG_AND_PAGE + pageNum;
     }
 
 

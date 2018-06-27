@@ -6,7 +6,7 @@ import java.io.Serializable;
  * Created by napuk on 6/24/2018.
  */
 
-public class TrailersObject implements Serializable {
+public class TrailerObject implements Serializable {
 
     private int movieId;
 
@@ -19,11 +19,11 @@ public class TrailersObject implements Serializable {
     private int size;
     private String type;
 
-    public TrailersObject(){
+    public TrailerObject(){
         super();
     }
 
-    public TrailersObject(String id, String iso_639_1, String iso_3166_1, String key, String name, String site, int size, String type){
+    public TrailerObject(String id, String iso_639_1, String iso_3166_1, String key, String name, String site, int size, String type){
         this.id = id;
         this.iso_639_1 = iso_639_1;
         this.iso_3166_1 = iso_3166_1;
@@ -34,7 +34,7 @@ public class TrailersObject implements Serializable {
         this.type = type;
     }
 
-    public TrailersObject(int movieId, String id, String iso_639_1, String iso_3166_1, String key, String name, String site, int size, String type){
+    public TrailerObject(int movieId, String id, String iso_639_1, String iso_3166_1, String key, String name, String site, int size, String type){
         this.movieId = movieId;
 
         this.id = id;

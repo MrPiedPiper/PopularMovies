@@ -7,4 +7,10 @@
         <item quantity="other">%d more trailers</item>
     </plurals>
 
+    <!--Detail Activity reviews button-->
+    <plurals name="detail_all_reviews_button">
+        <item quantity="one">View %d review</item>
+        <item quantity="other">View %d reviews</item>
+    </plurals>
+
 </resources>

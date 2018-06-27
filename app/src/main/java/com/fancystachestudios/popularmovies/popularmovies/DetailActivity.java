@@ -3,7 +3,6 @@ package com.fancystachestudios.popularmovies.popularmovies;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.Resources;
-import android.graphics.drawable.DrawableContainer;
 import android.net.Uri;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.LoaderManager;
@@ -23,12 +22,12 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.fancystachestudios.popularmovies.popularmovies.MovieAPI.MovieAPIManager;
-import com.fancystachestudios.popularmovies.popularmovies.MovieAPI.TrailersObject;
+import com.fancystachestudios.popularmovies.popularmovies.MovieAPI.ReviewObject;
+import com.fancystachestudios.popularmovies.popularmovies.MovieAPI.TrailerObject;
 import com.fancystachestudios.popularmovies.popularmovies.MovieDBFavorites.AppDatabase;
 import com.fancystachestudios.popularmovies.popularmovies.MovieDBFavorites.MovieDao;
 import com.fancystachestudios.popularmovies.popularmovies.MovieDBFavorites.TableMovieItem;
 import com.fancystachestudios.popularmovies.popularmovies.Utils.NetworkUtils;
-import com.google.common.collect.Table;
 import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
@@ -59,6 +58,8 @@ public class DetailActivity extends AppCompatActivity{
     @BindView(R.id.detail_more_trailers)Button trailerMoreTrailersButton;
     @BindView(R.id.detail_video_layout)ConstraintLayout videoLayoutConstraint;
 
+    @BindView(R.id.detail_reviews_button)Button allReviewsButton;
+
     Context currContext;
 
     //Create the Loader
@@ -79,9 +80,14 @@ public class DetailActivity extends AppCompatActivity{
     //Table loader ID
     private static final int ID_LOADER_TRAILER_LOAD = 25;
     //Create the Trailer Arraylist
-    ArrayList<TrailersObject> allTrailers;
+    ArrayList<TrailerObject> allTrailers;
     //Create the current Trailer
-    TrailersObject currTrailer;
+    TrailerObject currTrailer;
+
+
+    private static final int ID_LOADER_REVIEW_LOAD = 26;
+    LoaderManager.LoaderCallbacks<ArrayList<ReviewObject>> reviewLoader;
+
 
     //Get access to the movieAPIManager
     private MovieAPIManager movieAPIManager = new MovieAPIManager();
@@ -114,6 +120,7 @@ public class DetailActivity extends AppCompatActivity{
 
         trailerMoreTrailersButton.setVisibility(View.GONE);
         videoLayoutConstraint.setVisibility(View.GONE);
+        allReviewsButton.setVisibility(View.GONE);
 
         //Set the views to the data from the movie
         setViewsWithMovie(currMovie);
@@ -227,6 +234,8 @@ public class DetailActivity extends AppCompatActivity{
 
         setTrailerViews();
 
+        getReviews();
+
     }
 
     @Override
@@ -313,11 +322,11 @@ public class DetailActivity extends AppCompatActivity{
     private void setTrailerViews(){
 
         //Create and set the tableMovieItemLoader Loader
-        LoaderManager.LoaderCallbacks<ArrayList<TrailersObject>> trailerLoader = new LoaderManager.LoaderCallbacks<ArrayList<TrailersObject>>() {
+        LoaderManager.LoaderCallbacks<ArrayList<TrailerObject>> trailerLoader = new LoaderManager.LoaderCallbacks<ArrayList<TrailerObject>>() {
             @SuppressLint("StaticFieldLeak")
             @Override
-            public android.support.v4.content.Loader<ArrayList<TrailersObject>> onCreateLoader(int id, final Bundle args) {
-                return new android.support.v4.content.AsyncTaskLoader<ArrayList<TrailersObject>>(getBaseContext()) {
+            public android.support.v4.content.Loader<ArrayList<TrailerObject>> onCreateLoader(int id, final Bundle args) {
+                return new android.support.v4.content.AsyncTaskLoader<ArrayList<TrailerObject>>(getBaseContext()) {
 
                     @Override
                     protected void onStartLoading() {
@@ -327,9 +336,9 @@ public class DetailActivity extends AppCompatActivity{
                     }
 
                     @Override
-                    public ArrayList<TrailersObject> loadInBackground() {
+                    public ArrayList<TrailerObject> loadInBackground()  {
                         Log.d("Loadertest", "loadInBackground");
-                        ArrayList<TrailersObject> retrievedTrailers = null;
+                        ArrayList<TrailerObject> retrievedTrailers = null;
                         try {
                             URL trailerUrl = new URL(movieAPIManager.getTrailerListPath(currMovie.getId()));
                             retrievedTrailers = networkUtils.getTrailersFromUrl(trailerUrl);
@@ -348,13 +357,13 @@ public class DetailActivity extends AppCompatActivity{
             }
 
             @Override
-            public void onLoadFinished(android.support.v4.content.Loader<ArrayList<TrailersObject>> loader, ArrayList<TrailersObject> trailerObjects) {
+            public void onLoadFinished(android.support.v4.content.Loader<ArrayList<TrailerObject>> loader, ArrayList<TrailerObject> trailerObjects) {
                 if(trailerObjects != null && trailerObjects.size() > 0){
                     videoLayoutConstraint.setVisibility(View.VISIBLE);
                     //Set the curTrailers to the trailerObjects
                     allTrailers = trailerObjects;
                     //Loop through all available trailers
-                    for (TrailersObject currTrailer : trailerObjects) {
+                    for (TrailerObject currTrailer : trailerObjects) {
                         //If one is of the type "Trailer",
                         if (currTrailer.getType().equals("Trailer")) {
                             //Set the Trailer to that and escape the loop
@@ -370,7 +379,7 @@ public class DetailActivity extends AppCompatActivity{
             }
 
             @Override
-            public void onLoaderReset(android.support.v4.content.Loader<ArrayList<TrailersObject>> loader) {
+            public void onLoaderReset(android.support.v4.content.Loader<ArrayList<TrailerObject>> loader) {
 
             }
         };
@@ -378,7 +387,7 @@ public class DetailActivity extends AppCompatActivity{
         //Get the LoaderManager
         LoaderManager loaderManager = getSupportLoaderManager();
         //Get the trailer Loader by ID
-        android.support.v4.content.Loader<ArrayList<TrailersObject>> roomLoader = loaderManager.getLoader(ID_LOADER_TRAILER_LOAD);
+        android.support.v4.content.Loader<ArrayList<TrailerObject>> roomLoader = loaderManager.getLoader(ID_LOADER_TRAILER_LOAD);
         //If there's  no Loader,
         if(roomLoader == null){
             //Create it
@@ -390,7 +399,7 @@ public class DetailActivity extends AppCompatActivity{
         }
     }
 
-    private void setViewsWithTrailer(TrailersObject trailer){
+    private void setViewsWithTrailer(TrailerObject trailer){
         currTrailer = trailer;
 
         Picasso.get().load(movieAPIManager.getVideoThumbnailPath(trailer.getKey())).into(trailerThumbnailImageView);
@@ -417,5 +426,76 @@ public class DetailActivity extends AppCompatActivity{
         Intent moreTrailersIntent = new Intent(this, MoreTrailersActivity.class);
         moreTrailersIntent.putExtra(getString(R.string.detail_more_trailers_intent_extra_key), allTrailers);
         startActivity(moreTrailersIntent);
+    }
+
+    //Function sets the attributes of the trailer Views based on trailer data
+    private void getReviews(){
+
+        //Create and set the tableMovieItemLoader Loader
+        reviewLoader = new LoaderManager.LoaderCallbacks<ArrayList<ReviewObject>>() {
+            @SuppressLint("StaticFieldLeak")
+            @Override
+            public android.support.v4.content.Loader<ArrayList<ReviewObject>> onCreateLoader(int id, final Bundle bundle) {
+                return new android.support.v4.content.AsyncTaskLoader<ArrayList<ReviewObject>>(getBaseContext()) {
+
+                    @Override
+                    protected void onStartLoading() {
+                        super.onStartLoading();
+                        forceLoad();
+                    }
+
+                    @Override
+                    public ArrayList<ReviewObject> loadInBackground() {
+                        ArrayList<ReviewObject> retrievedReviews = new ArrayList<>();
+                        try{
+                            URL reviewUrl = new URL(movieAPIManager.getReviewPath(currMovie.getId(), 1));
+                            retrievedReviews = networkUtils.getReviewsFromUrl(reviewUrl);
+                        } catch (MalformedURLException e) {
+                            e.printStackTrace();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        return retrievedReviews;
+                    }
+                };
+            }
+
+            @Override
+            public void onLoadFinished(android.support.v4.content.Loader<ArrayList<ReviewObject>> loader, ArrayList<ReviewObject> reviewObjects) {
+                if(reviewObjects != null && reviewObjects.size() > 0){
+                    int reviewCount = reviewObjects.size();
+                    //I need to implement the endlessscrolllistener :<
+                    Log.d("test", "List is " + reviewCount + " long");
+
+                    allReviewsButton.setVisibility(View.VISIBLE);
+                    allReviewsButton.setText(getResources().getQuantityString(R.plurals.detail_all_reviews_button, reviewCount, reviewCount));
+                }
+            }
+
+            @Override
+            public void onLoaderReset(android.support.v4.content.Loader<ArrayList<ReviewObject>> loader) {
+
+            }
+        };
+
+        //Get the LoaderManager
+        LoaderManager loaderManager = getSupportLoaderManager();
+        //Get the trailer Loader by ID
+        android.support.v4.content.Loader<ArrayList<ReviewObject>> roomLoader = loaderManager.getLoader(ID_LOADER_REVIEW_LOAD);
+        //If there's  no Loader,
+        if(roomLoader == null){
+            //Create it
+            loaderManager.initLoader(ID_LOADER_REVIEW_LOAD, null, reviewLoader);
+        }else{
+            //Otherwise, restart it
+            loaderManager.destroyLoader(ID_LOADER_REVIEW_LOAD);
+            loaderManager.initLoader(ID_LOADER_REVIEW_LOAD, null, reviewLoader);
+        }
+    }
+
+    public void allReviewsOnClick(View view){
+        Intent allReviewsIntent = new Intent(this, AllReviewsActivity.class);
+        allReviewsIntent.putExtra(getString(R.string.detail_all_reviews_intent_extra_key), currMovie);
+        startActivity(allReviewsIntent);
     }
 }

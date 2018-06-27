@@ -9,7 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.fancystachestudios.popularmovies.popularmovies.MovieAPI.MovieAPIManager;
-import com.fancystachestudios.popularmovies.popularmovies.MovieAPI.TrailersObject;
+import com.fancystachestudios.popularmovies.popularmovies.MovieAPI.TrailerObject;
 import com.fancystachestudios.popularmovies.popularmovies.R;
 import com.squareup.picasso.Picasso;
 
@@ -22,7 +22,7 @@ import java.util.ArrayList;
 public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.ViewHolder> {
 
     //Declare variable to hold Dataset
-    private ArrayList<TrailersObject> mDataset;
+    private ArrayList<TrailerObject> mDataset;
     //Get access to MovieAPIManager
     private MovieAPIManager movieAPIManager = new MovieAPIManager();
     //Get the MovieClickListener
@@ -56,7 +56,7 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.ViewHold
         void onTrailerClick(int clickedItemIndex);
     }
 
-    public TrailerAdapter(Context context, ArrayList<TrailersObject> myDataset, TrailerClickListener listener){
+    public TrailerAdapter(Context context, ArrayList<TrailerObject> myDataset, TrailerClickListener listener){
         //Set the context variable
         currContext = context;
         mDataset = myDataset;
@@ -75,10 +75,11 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.ViewHold
     @Override
     public void onBindViewHolder(TrailerAdapter.ViewHolder holder, int position) {
         //Get the current trailer
-        TrailersObject currTrailer = mDataset.get(position);
+        TrailerObject currTrailer = mDataset.get(position);
         //Set the views
         holder.mTrailerTitle.setText(currTrailer.getName());
         Picasso.get().load(movieAPIManager.getVideoThumbnailPath(currTrailer.getKey())).into(holder.mTrailerThumbnail);
+
     }
 
     @Override
