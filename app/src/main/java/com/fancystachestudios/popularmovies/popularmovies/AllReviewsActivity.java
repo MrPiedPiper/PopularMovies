@@ -57,8 +57,6 @@ public class AllReviewsActivity extends AppCompatActivity
         setContentView(R.layout.customized_recyclerview);
         ButterKnife.bind(this);
 
-        getActionBar().setDisplayHomeAsUpEnabled(true);
-
         currMovie = (TableMovieItem) getIntent().getParcelableExtra(getString(R.string.detail_all_reviews_intent_extra_key));
 
         mClickListener = this;
