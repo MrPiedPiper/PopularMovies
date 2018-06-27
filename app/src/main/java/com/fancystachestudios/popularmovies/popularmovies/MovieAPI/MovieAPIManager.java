@@ -1,8 +1,6 @@
 package com.fancystachestudios.popularmovies.popularmovies.MovieAPI;
 
-import android.util.Log;
-
-import com.fancystachestudios.popularmovies.popularmovies.MovieDBFavorites.TableMovieItem;
+import com.fancystachestudios.popularmovies.popularmovies.MovieDBFavorites.RoomMovieObject;
 
 /**
  * MovieAPIManager is a utility class for interacting with the themoviedb.org API
@@ -10,7 +8,7 @@ import com.fancystachestudios.popularmovies.popularmovies.MovieDBFavorites.Table
 
 public class MovieAPIManager {
 
-    //API key
+    //API key 
     static String KEY = "Your API key goes here";
 
     //Movie URL base
@@ -65,12 +63,12 @@ public class MovieAPIManager {
     }
 
     //Method returns path the the poster image
-    public String getPosterPath(TableMovieItem movie){
+    public String getPosterPath(RoomMovieObject movie){
         return IMAGE_BASE_185 + movie.getPosterPath();
     }
 
     //Method returns path to the backdrop image
-    public String getBackdropPath(TableMovieItem movie){
+    public String getBackdropPath(RoomMovieObject movie){
         return IMAGE_BASE_780 + movie.getBackdropPath();
     }
 
@@ -84,13 +82,13 @@ public class MovieAPIManager {
         return YOUTUBE_BASE + youtubeKey;
     }
 
+    //Get path to the Youtube video's thumbnail
     public String getVideoThumbnailPath(String videoKey){
-        Log.d("test", THUMBNAIL_BASE1 + videoKey + THUMBNAIL_BASE3);
         return THUMBNAIL_BASE1 + videoKey + THUMBNAIL_BASE3;
     }
 
+    //Get the path to the review list JSON
     public String getReviewPath(int movieID, int pageNum){
-        Log.d("test", MOVIE_BASE + movieID + REVIEW_BASE3 + KEY + ENG_AND_PAGE + pageNum);
         return MOVIE_BASE + movieID + REVIEW_BASE3 + KEY + ENG_AND_PAGE + pageNum;
     }
 

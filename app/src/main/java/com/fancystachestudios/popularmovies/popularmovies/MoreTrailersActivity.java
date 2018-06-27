@@ -32,10 +32,16 @@ implements TrailerAdapter.TrailerClickListener{
         setContentView(R.layout.customized_recyclerview);
         ButterKnife.bind(this);
 
+
+        //Get the trailers (Sent over from the DetailActivity
         allTrailers = (ArrayList<TrailerObject>) getIntent().getSerializableExtra(getString(R.string.detail_more_trailers_intent_extra_key));
 
+
+        //Create variables for the RecyclerView properties
         TrailerAdapter trailerAdapter = new TrailerAdapter(this, allTrailers, this);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(this);
+
+        //Set the RecyclerView properties
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setAdapter(trailerAdapter);
     }
@@ -43,7 +49,9 @@ implements TrailerAdapter.TrailerClickListener{
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
+            //If it's the Home button
             case android.R.id.home:
+                //Simulate the Back button
                 this.onBackPressed();
                 return true;
         }
@@ -52,8 +60,11 @@ implements TrailerAdapter.TrailerClickListener{
 
     @Override
     public void onTrailerClick(int clickedItemIndex) {
+        //Get the link to the YouTube video
         String youtubeAddress = movieAPIManager.getYoutubeFromKey(allTrailers.get(clickedItemIndex).getKey());
+        //Create a new ACTION_VIEW Intent to the YouTube video
         Intent youtubeIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(youtubeAddress));
+        //Start the Activity
         startActivity(youtubeIntent);
     }
 

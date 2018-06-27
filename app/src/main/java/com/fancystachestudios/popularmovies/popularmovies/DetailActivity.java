@@ -26,7 +26,7 @@ import com.fancystachestudios.popularmovies.popularmovies.MovieAPI.ReviewObject;
 import com.fancystachestudios.popularmovies.popularmovies.MovieAPI.TrailerObject;
 import com.fancystachestudios.popularmovies.popularmovies.MovieDBFavorites.AppDatabase;
 import com.fancystachestudios.popularmovies.popularmovies.MovieDBFavorites.MovieDao;
-import com.fancystachestudios.popularmovies.popularmovies.MovieDBFavorites.TableMovieItem;
+import com.fancystachestudios.popularmovies.popularmovies.MovieDBFavorites.RoomMovieObject;
 import com.fancystachestudios.popularmovies.popularmovies.Utils.NetworkUtils;
 import com.squareup.picasso.Picasso;
 
@@ -62,8 +62,13 @@ public class DetailActivity extends AppCompatActivity{
 
     Context currContext;
 
+
+    //Create the LoaderManager variable
+    LoaderManager loaderManager;
+
+
     //Create the Loader
-    private LoaderManager.LoaderCallbacks<TableMovieItem> tableMovieItemLoader;
+    private LoaderManager.LoaderCallbacks<RoomMovieObject> tableMovieItemLoader;
     //Constant to save the table being queried by the Loader
     private static final String LOADER_IS_FAVORITE = "query";
     //Table loader ID
@@ -74,9 +79,6 @@ public class DetailActivity extends AppCompatActivity{
     //Table loader ID
     private static final int ID_LOADER_TOGGLE_FAVORITE = 24;
 
-
-    //Constant to save the table being queried by the Loader
-    private static final String LOADER_TRAILER_LOAD = "trailer load";
     //Table loader ID
     private static final int ID_LOADER_TRAILER_LOAD = 25;
     //Create the Trailer Arraylist
@@ -95,7 +97,7 @@ public class DetailActivity extends AppCompatActivity{
     //Get access to the NetworkUtils
     private NetworkUtils networkUtils = new NetworkUtils();
 
-    private TableMovieItem currMovie;
+    private RoomMovieObject currMovie;
 
     private Menu menu;
 
@@ -116,7 +118,7 @@ public class DetailActivity extends AppCompatActivity{
 
         //Retrieve the movie selected to open the DetailActivity
         Intent intent = getIntent();
-        currMovie = (TableMovieItem) intent.getParcelableExtra(getString(R.string.detail_intent_tag));
+        currMovie = (RoomMovieObject) intent.getParcelableExtra(getString(R.string.detail_intent_tag));
 
         trailerMoreTrailersButton.setVisibility(View.GONE);
         videoLayoutConstraint.setVisibility(View.GONE);
@@ -130,14 +132,17 @@ public class DetailActivity extends AppCompatActivity{
         //Get the Dao
         movieDao = favoriteDb.movieDao();
 
+        //Set the LoaderManager variable
+        loaderManager = getSupportLoaderManager();
+
         //Set the tableMovieItemLoader Loader
-        tableMovieItemLoader = new LoaderManager.LoaderCallbacks<TableMovieItem>() {
+        tableMovieItemLoader = new LoaderManager.LoaderCallbacks<RoomMovieObject>() {
             @SuppressLint("StaticFieldLeak")
             @Override
-            public android.support.v4.content.Loader<TableMovieItem> onCreateLoader(int id, final Bundle args) {
+            public android.support.v4.content.Loader<RoomMovieObject> onCreateLoader(int id, final Bundle args) {
                 Log.d("mytest", "created loader");
                 if(id == ID_LOADER_FAVORITES) {
-                    return new android.support.v4.content.AsyncTaskLoader<TableMovieItem>(getBaseContext()) {
+                    return new android.support.v4.content.AsyncTaskLoader<RoomMovieObject>(getBaseContext()) {
 
                         @Override
                         protected void onStartLoading() {
@@ -149,7 +154,7 @@ public class DetailActivity extends AppCompatActivity{
                         }
 
                         @Override
-                        public TableMovieItem loadInBackground() {
+                        public RoomMovieObject loadInBackground() {
                             //Load the Database
                             AppDatabase favoriteDb = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, getString(R.string.favorite_movies_table_name)).build();
                             //Get the DAO
@@ -160,7 +165,7 @@ public class DetailActivity extends AppCompatActivity{
                         }
                     };
                 }else if(id == ID_LOADER_TOGGLE_FAVORITE){
-                    return new android.support.v4.content.AsyncTaskLoader<TableMovieItem>(getBaseContext()){
+                    return new android.support.v4.content.AsyncTaskLoader<RoomMovieObject>(getBaseContext()){
 
                         @Override
                         protected void onStartLoading() {
@@ -172,14 +177,14 @@ public class DetailActivity extends AppCompatActivity{
                         }
 
                         @Override
-                        public TableMovieItem loadInBackground() {
+                        public RoomMovieObject loadInBackground() {
 
                             isFavorite = !isFavorite;
 
                             if(isFavorite){
                                 movieDao.insertAll(currMovie);
 
-                                TableMovieItem testMovie = movieDao.findById(currMovie.getId());
+                                RoomMovieObject testMovie = movieDao.findById(currMovie.getId());
 
                                 Log.d("movieTest", String.valueOf(testMovie.getId()));
                             }else{
@@ -208,9 +213,9 @@ public class DetailActivity extends AppCompatActivity{
             }
 
             @Override
-            public void onLoadFinished(android.support.v4.content.Loader<TableMovieItem> loader, TableMovieItem tableMovieItem) {
+            public void onLoadFinished(android.support.v4.content.Loader<RoomMovieObject> loader, RoomMovieObject roomMovieObject) {
                 if(loader.getId() == ID_LOADER_FAVORITES){
-                    if(tableMovieItem != null){
+                    if(roomMovieObject != null){
                         menu.getItem(0).setIcon(R.drawable.ic_favorite_full);
                         isFavorite = true;
                     }else{
@@ -220,7 +225,7 @@ public class DetailActivity extends AppCompatActivity{
             }
 
             @Override
-            public void onLoaderReset(android.support.v4.content.Loader<TableMovieItem> loader) {
+            public void onLoaderReset(android.support.v4.content.Loader<RoomMovieObject> loader) {
 
             }
         };
@@ -253,10 +258,8 @@ public class DetailActivity extends AppCompatActivity{
         //Insert the current movie
         bundle.putParcelable(LOADER_IS_FAVORITE, currMovie);
 
-        //Get the LoaderManager
-        LoaderManager loaderManager = getSupportLoaderManager();
         //Get the Loader by ID
-        android.support.v4.content.Loader<TableMovieItem> roomLoader = loaderManager.getLoader(ID_LOADER_FAVORITES);
+        android.support.v4.content.Loader<RoomMovieObject> roomLoader = loaderManager.getLoader(ID_LOADER_FAVORITES);
         //If there's  no Loader,
         if(roomLoader == null){
             //Create it
@@ -287,10 +290,8 @@ public class DetailActivity extends AppCompatActivity{
                 //Insert the current movie
                 bundle.putParcelable(LOADER_TOGGLE_FAVORITE, currMovie);
 
-                //Get the LoaderManager
-                LoaderManager loaderManager = getSupportLoaderManager();
                 //Get the Loader by ID
-                android.support.v4.content.Loader<TableMovieItem> roomLoader = loaderManager.getLoader(ID_LOADER_TOGGLE_FAVORITE);
+                android.support.v4.content.Loader<RoomMovieObject> roomLoader = loaderManager.getLoader(ID_LOADER_TOGGLE_FAVORITE);
                 //If there's  no Loader,
                 if (roomLoader == null) {
                     //Create it
@@ -306,8 +307,8 @@ public class DetailActivity extends AppCompatActivity{
         return true;
     }
 
-    //Function sets the attributes of the Views based on the MovieObject
-    private void setViewsWithMovie(TableMovieItem movie){
+    //Function sets the attributes of the Views based on the GsonMovieObject
+    private void setViewsWithMovie(RoomMovieObject movie){
         //Load all of the data from the movie object and set View data accordingly
         Picasso.get().load(movieAPIManager.getBackdropPath(movie)).into(backdropImageView);
         voteCountTextView.setText(String.valueOf(movie.getVoteCount()));
@@ -384,8 +385,6 @@ public class DetailActivity extends AppCompatActivity{
             }
         };
 
-        //Get the LoaderManager
-        LoaderManager loaderManager = getSupportLoaderManager();
         //Get the trailer Loader by ID
         android.support.v4.content.Loader<ArrayList<TrailerObject>> roomLoader = loaderManager.getLoader(ID_LOADER_TRAILER_LOAD);
         //If there's  no Loader,
@@ -478,8 +477,6 @@ public class DetailActivity extends AppCompatActivity{
             }
         };
 
-        //Get the LoaderManager
-        LoaderManager loaderManager = getSupportLoaderManager();
         //Get the trailer Loader by ID
         android.support.v4.content.Loader<ArrayList<ReviewObject>> roomLoader = loaderManager.getLoader(ID_LOADER_REVIEW_LOAD);
         //If there's  no Loader,

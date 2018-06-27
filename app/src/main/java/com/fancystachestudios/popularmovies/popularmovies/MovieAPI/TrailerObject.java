@@ -1,9 +1,12 @@
 package com.fancystachestudios.popularmovies.popularmovies.MovieAPI;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.io.Serializable;
 
 /**
- * Created by napuk on 6/24/2018.
+ * Custom class for storing Trailer data
  */
 
 public class TrailerObject implements Serializable {

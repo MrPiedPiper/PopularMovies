@@ -9,7 +9,7 @@ import android.arch.persistence.room.RoomDatabase;
 import android.arch.persistence.room.TypeConverters;
 
 
-@Database(entities = {TableMovieItem.class}, version = 1)
+@Database(entities = {RoomMovieObject.class}, version = 1)
 @TypeConverters({Converters.class})
 public  abstract class AppDatabase extends RoomDatabase {
     public abstract MovieDao movieDao();

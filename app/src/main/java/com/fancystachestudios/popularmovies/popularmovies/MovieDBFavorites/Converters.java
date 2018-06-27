@@ -3,7 +3,7 @@ package com.fancystachestudios.popularmovies.popularmovies.MovieDBFavorites;
 import android.arch.persistence.room.TypeConverter;
 
 /**
- * Created by napuk on 6/14/2018.
+ * Data converters for storing int arrays in the Room
  */
 
 public class Converters {

@@ -2,10 +2,10 @@ package com.fancystachestudios.popularmovies.popularmovies.Utils;
 
 import android.util.Log;
 
-import com.fancystachestudios.popularmovies.popularmovies.MovieAPI.MovieObject;
+import com.fancystachestudios.popularmovies.popularmovies.MovieAPI.GsonMovieObject;
 import com.fancystachestudios.popularmovies.popularmovies.MovieAPI.ReviewObject;
 import com.fancystachestudios.popularmovies.popularmovies.MovieAPI.TrailerObject;
-import com.fancystachestudios.popularmovies.popularmovies.MovieDBFavorites.TableMovieItem;
+import com.fancystachestudios.popularmovies.popularmovies.MovieDBFavorites.RoomMovieObject;
 import com.google.gson.Gson;
 
 import org.json.JSONArray;
@@ -42,22 +42,28 @@ public class NetworkUtils {
     }
 
     /**
-     * Function gets Movie JSON from provided URL
+     * Function gets ArrayList of Movies from provided URL
      * @param url JSON location
      * @return ArrayList of MovieObjects
      * @throws IOException failed to retrieve from URL
      */
-    public ArrayList<TableMovieItem> getMoviesFromUrl(URL url) throws IOException {
+    public ArrayList<RoomMovieObject> getMoviesFromUrl(URL url) throws IOException {
 
         JSONObject movieJson = getJsonObjectFromUrl(url);
 
         //Get movies from the JSONObject
-        ArrayList<TableMovieItem> movies = getMovieArrayFromJsonResults(movieJson);
+        ArrayList<RoomMovieObject> movies = getMovieArrayFromJsonResults(movieJson);
 
         //Return the movies
         return movies;
     }
 
+    /**
+     * Function gets ArrayList of Trailers from provided URL
+     * @param url JSON location
+     * @return ArrayList of TrailerObjects
+     * @throws IOException failed to retrieve from URL
+     */
     public ArrayList<TrailerObject> getTrailersFromUrl(URL url) throws IOException {
         JSONObject trailerJson = getJsonObjectFromUrl(url);
         Log.d("JSONTest", trailerJson.toString());
@@ -66,12 +72,24 @@ public class NetworkUtils {
         return trailers;
     }
 
+    /**
+     * Function gets ArrayList of Reviews from provided URL
+     * @param url JSON location
+     * @return ArrayList of ReviewObjects
+     * @throws IOException failed to retrieve from URL
+     */
     public ArrayList<ReviewObject> getReviewsFromUrl(URL url) throws IOException {
         JSONObject reviewJson = getJsonObjectFromUrl(url);
         ArrayList<ReviewObject> reviews = getReviewArrayFromJsonResults(reviewJson);
         return reviews;
     }
 
+    /**
+     * Function gets JSON from provided URL
+     * @param url JSON location
+     * @return ArrayList of TrailerObjects
+     * @throws IOException failed to retrieve from URL
+     */
     private JSONObject getJsonObjectFromUrl(URL url) throws IOException {
 
         //Followed these instructions to learn how to use OkHttp http://www.vogella.com/tutorials/JavaLibrary-OkHttp/article.html
@@ -100,20 +118,20 @@ public class NetworkUtils {
      * @param jsonResults JSON retrieved from themoviedb
      * @return ArrayList of MovieObjects
      */
-    private ArrayList<TableMovieItem> getMovieArrayFromJsonResults(JSONObject jsonResults) {
+    private ArrayList<RoomMovieObject> getMovieArrayFromJsonResults(JSONObject jsonResults) {
         try {
             //Gain access to Gson
             Gson gson = new Gson();
             //Get the JSONArray of movies (Could cause JSONException)
             JSONArray jsonArrayMovies = jsonResults.getJSONArray("results");
             //Make the "movies" ArrayList
-            ArrayList<TableMovieItem> movies = new ArrayList<>();
+            ArrayList<RoomMovieObject> movies = new ArrayList<>();
             //For each movie in the JSON,
             for(int i = 0; i < jsonArrayMovies.length(); i++){
-                //put the JSON into a MovieObject (using Gson) (Could cause JSONException)
-                MovieObject gsonMovieObject = gson.fromJson(jsonArrayMovies.get(i).toString(), MovieObject.class);
-                //Convert the gsonMovieObject to a TableMovieItem
-                TableMovieItem currMovie = new TableMovieItem(gsonMovieObject);
+                //put the JSON into a GsonMovieObject (using Gson) (Could cause JSONException)
+                GsonMovieObject gsonGsonMovieObject = gson.fromJson(jsonArrayMovies.get(i).toString(), GsonMovieObject.class);
+                //Convert the gsonGsonMovieObject to a RoomMovieObject
+                RoomMovieObject currMovie = new RoomMovieObject(gsonGsonMovieObject);
                 //Add the movie to the ArrayList
                 movies.add(i, currMovie);
             }
@@ -155,6 +173,11 @@ public class NetworkUtils {
         return null;
     }
 
+    /**
+     * Function converts the JSON retrieved from themoviedb to an ArrayList of reviews
+     * @param jsonResults JSON retrieved from themoviedb
+     * @return ArrayList of MovieObjects
+     */
     private ArrayList<ReviewObject> getReviewArrayFromJsonResults(JSONObject jsonResults){
         try {
             //Gain access to Gson

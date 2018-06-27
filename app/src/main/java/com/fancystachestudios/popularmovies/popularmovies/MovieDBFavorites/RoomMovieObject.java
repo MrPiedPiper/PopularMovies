@@ -5,18 +5,15 @@ import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.support.v4.widget.CircularProgressDrawable;
 
-import com.fancystachestudios.popularmovies.popularmovies.MovieAPI.MovieObject;
-
-import java.io.Serializable;
+import com.fancystachestudios.popularmovies.popularmovies.MovieAPI.GsonMovieObject;
 
 /**
- * Custom Class for storing movie data
+ * Room compatible Custom Class for storing movie data
  */
 
 @Entity(tableName = "movies")
-public class TableMovieItem implements Parcelable {
+public class RoomMovieObject implements Parcelable {
 
     //Create all necessary variables
     @ColumnInfo(name = "vote_count")
@@ -63,41 +60,41 @@ public class TableMovieItem implements Parcelable {
     private String releaseDate;
 
 
-    public TableMovieItem(){
+    public RoomMovieObject(){
         super();
     }
 
-    public TableMovieItem(MovieObject movieObject){
-        this.voteCount = movieObject.getVoteCount();
-        this.id = movieObject.getId();
-        this.video = movieObject.getVideo();
-        this.voteAverage = (int) movieObject.getVoteAverage() * 100;
-        this.title = movieObject.getTitle();
-        this.popularity = (int) movieObject.getPopularity() * 100;
-        this.posterPath = movieObject.getPosterPath();
-        this.originalLanguage = movieObject.getOriginalLanguage();
-        this.originalTitle = movieObject.getOriginalTitle();
-        this.genreIds = movieObject.getGenreIds();
-        this.backdropPath = movieObject.getBackdropPath();
-        this.adult = movieObject.getAdult();
-        this.overview = movieObject.getOverview();
-        this.releaseDate = movieObject.getReleaseDate();
+    public RoomMovieObject(GsonMovieObject gsonMovieObject){
+        this.voteCount = gsonMovieObject.getVoteCount();
+        this.id = gsonMovieObject.getId();
+        this.video = gsonMovieObject.getVideo();
+        this.voteAverage = (int) gsonMovieObject.getVoteAverage() * 100;
+        this.title = gsonMovieObject.getTitle();
+        this.popularity = (int) gsonMovieObject.getPopularity() * 100;
+        this.posterPath = gsonMovieObject.getPosterPath();
+        this.originalLanguage = gsonMovieObject.getOriginalLanguage();
+        this.originalTitle = gsonMovieObject.getOriginalTitle();
+        this.genreIds = gsonMovieObject.getGenreIds();
+        this.backdropPath = gsonMovieObject.getBackdropPath();
+        this.adult = gsonMovieObject.getAdult();
+        this.overview = gsonMovieObject.getOverview();
+        this.releaseDate = gsonMovieObject.getReleaseDate();
     }
 
-    public TableMovieItem(int vote_count,
-                       int id,
-                       boolean video,
-                       float vote_average,
-                       String title,
-                       float popularity,
-                       String poster_path,
-                       String original_language,
-                       String original_title,
-                       int[] genre_ids,
-                       String backdrop_path,
-                       boolean adult,
-                       String overview,
-                       String release_date){
+    public RoomMovieObject(int vote_count,
+                           int id,
+                           boolean video,
+                           float vote_average,
+                           String title,
+                           float popularity,
+                           String poster_path,
+                           String original_language,
+                           String original_title,
+                           int[] genre_ids,
+                           String backdrop_path,
+                           boolean adult,
+                           String overview,
+                           String release_date){
         this.voteCount = vote_count;
         this.id = id;
         this.video = video;
@@ -116,7 +113,7 @@ public class TableMovieItem implements Parcelable {
 
     //Set all of the getters and setters
 
-    protected TableMovieItem(Parcel in) {
+    protected RoomMovieObject(Parcel in) {
         voteCount = in.readInt();
         id = in.readInt();
         video = in.readByte() != 0;
@@ -133,15 +130,15 @@ public class TableMovieItem implements Parcelable {
         releaseDate = in.readString();
     }
 
-    public static final Creator<TableMovieItem> CREATOR = new Creator<TableMovieItem>() {
+    public static final Creator<RoomMovieObject> CREATOR = new Creator<RoomMovieObject>() {
         @Override
-        public TableMovieItem createFromParcel(Parcel in) {
-            return new TableMovieItem(in);
+        public RoomMovieObject createFromParcel(Parcel in) {
+            return new RoomMovieObject(in);
         }
 
         @Override
-        public TableMovieItem[] newArray(int size) {
-            return new TableMovieItem[size];
+        public RoomMovieObject[] newArray(int size) {
+            return new RoomMovieObject[size];
         }
     };
 

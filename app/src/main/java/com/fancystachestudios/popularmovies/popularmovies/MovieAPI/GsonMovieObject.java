@@ -3,10 +3,10 @@ package com.fancystachestudios.popularmovies.popularmovies.MovieAPI;
 import java.io.Serializable;
 
 /**
- * Custom Class for storing movie data
+ * Custom Class for storing movie data (GSON puts the info in before being transferred to the RoomMovieObject
  */
 
-public class MovieObject implements Serializable {
+public class GsonMovieObject implements Serializable {
 
     //Create all necessary variables
     private int vote_count;
@@ -24,24 +24,24 @@ public class MovieObject implements Serializable {
     private String overview;
     private String release_date;
 
-    public MovieObject(){
+    public GsonMovieObject(){
         super();
     }
 
-    public MovieObject(int vote_count,
-                       int id,
-                       boolean video,
-                       float vote_average,
-                       String title,
-                       float popularity,
-                       String poster_path,
-                       String original_language,
-                       String original_title,
-                       int[] genre_ids,
-                       String backdrop_path,
-                       boolean adult,
-                       String overview,
-                       String release_date){
+    public GsonMovieObject(int vote_count,
+                           int id,
+                           boolean video,
+                           float vote_average,
+                           String title,
+                           float popularity,
+                           String poster_path,
+                           String original_language,
+                           String original_title,
+                           int[] genre_ids,
+                           String backdrop_path,
+                           boolean adult,
+                           String overview,
+                           String release_date){
         this.vote_count = vote_count;
         this.id = id;
         this.video = video;

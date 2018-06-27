@@ -1,7 +1,7 @@
 package com.fancystachestudios.popularmovies.popularmovies.MovieAPI;
 
 /**
- * Created by napuk on 6/26/2018.
+ * Custom class for storing Review data
  */
 
 public class ReviewObject {

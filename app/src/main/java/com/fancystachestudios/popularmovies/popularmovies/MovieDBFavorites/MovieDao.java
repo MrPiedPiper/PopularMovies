@@ -5,11 +5,7 @@ import android.arch.persistence.room.Delete;
 import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.Query;
 import android.arch.persistence.room.TypeConverters;
-import android.arch.persistence.room.Update;
 
-import com.fancystachestudios.popularmovies.popularmovies.MovieAPI.MovieObject;
-
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -21,21 +17,21 @@ import java.util.List;
 public interface MovieDao {
 
     @Query("SELECT * FROM movies")
-    List<TableMovieItem> getAll();
+    List<RoomMovieObject> getAll();
 
     @Query("SELECT * FROM movies WHERE id IN (:movieIds)")
-    List<TableMovieItem> loadAllByIds(int[] movieIds);
+    List<RoomMovieObject> loadAllByIds(int[] movieIds);
 
     @Query("SELECT * FROM movies WHERE id LIKE :movieId LIMIT 1")
-    TableMovieItem findById(int movieId);
+    RoomMovieObject findById(int movieId);
 
     @Query("SELECT * FROM movies WHERE title LIKE :movieTitle LIMIT 1")
-    TableMovieItem findByTitle(String movieTitle);
+    RoomMovieObject findByTitle(String movieTitle);
 
     @Insert
-    void insertAll(TableMovieItem... movies);
+    void insertAll(RoomMovieObject... movies);
 
     @Delete
-    void delete(TableMovieItem movie);
+    void delete(RoomMovieObject movie);
 
 }

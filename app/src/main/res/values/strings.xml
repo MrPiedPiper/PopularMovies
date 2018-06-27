@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">PopularMovies</string>
 
-    <!--Tag used to carry the MovieObject between the MainActivity and the DetailActivity-->
+    <!--Tag used to carry GsonMovieObjectject between the MainActivity and the DetailActivity-->
     <string name="detail_intent_tag">DetailIntentObject</string>
 
 

@@ -4,6 +4,10 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
+/**
+ * Custom class enables endless scrolling
+ */
+
 public abstract class EndlessScrollListener extends android.support.v7.widget.RecyclerView.OnScrollListener{
 
     //Declare variables

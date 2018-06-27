@@ -1,28 +1,22 @@
 package com.fancystachestudios.popularmovies.popularmovies;
 
 import android.annotation.SuppressLint;
-import android.app.ActionBar;
-import android.content.Intent;
 import android.support.v4.app.LoaderManager;
-import android.content.AsyncTaskLoader;
-import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.MenuItem;
-import android.view.View;
 
 import com.fancystachestudios.popularmovies.popularmovies.MovieAPI.MovieAPIManager;
 import com.fancystachestudios.popularmovies.popularmovies.MovieAPI.ReviewObject;
-import com.fancystachestudios.popularmovies.popularmovies.MovieDBFavorites.TableMovieItem;
+import com.fancystachestudios.popularmovies.popularmovies.MovieDBFavorites.RoomMovieObject;
 import com.fancystachestudios.popularmovies.popularmovies.Utils.EndlessScrollListener;
 import com.fancystachestudios.popularmovies.popularmovies.Utils.NetworkUtils;
 import com.fancystachestudios.popularmovies.popularmovies.Utils.ReviewAdapter;
 
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -30,25 +24,36 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class AllReviewsActivity extends AppCompatActivity
-        implements ReviewAdapter.ReviewClickListener{
+/**
+ * Activity shows that displays the reviews
+ */
 
+public class AllReviewsActivity extends AppCompatActivity{
+
+    //Get the RecyclerView
     @BindView(R.id.custom_recyclerview)RecyclerView mRecyclerView;
 
+    //Array with all the reviews
     private ArrayList<ReviewObject> allReviews = new ArrayList<>();
 
-    private TableMovieItem currMovie;
-    private EndlessScrollListener mScrollListener;
-    private int currPage = 0;
-    ReviewAdapter.ReviewClickListener mClickListener;
+    //Current movie
+    private RoomMovieObject currMovie;
 
+    //EndlessScrollListener
+    private EndlessScrollListener mScrollListener;
+    //Current page (of reviews)
+    private int currPageNum = 0;
+
+    //Adapter for the RecyclerView
     RecyclerView.Adapter mAdapter;
 
+    //Variables to access the MovieAPIManager and NetworkUtils
     private MovieAPIManager movieAPIManager = new MovieAPIManager();
     private NetworkUtils networkUtils = new NetworkUtils();
 
-
+    //Review Loader ID
     private static final int ID_LOADER_REVIEW_LOAD = 22;
+    //Review LoaderCallbacks
     LoaderManager.LoaderCallbacks<ArrayList<ReviewObject>> reviewLoader;
 
     @Override
@@ -57,11 +62,11 @@ public class AllReviewsActivity extends AppCompatActivity
         setContentView(R.layout.customized_recyclerview);
         ButterKnife.bind(this);
 
-        currMovie = (TableMovieItem) getIntent().getParcelableExtra(getString(R.string.detail_all_reviews_intent_extra_key));
+        //Set the current movie
+        currMovie = (RoomMovieObject) getIntent().getParcelableExtra(getString(R.string.detail_all_reviews_intent_extra_key));
 
-        mClickListener = this;
-
-        mAdapter = new ReviewAdapter(this, allReviews, mClickListener);
+        //Set up the RecyclerView Variables
+        mAdapter = new ReviewAdapter(this, allReviews);
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(this);
         mScrollListener = new EndlessScrollListener(mLayoutManager) {
             @Override
@@ -70,17 +75,21 @@ public class AllReviewsActivity extends AppCompatActivity
             }
         };
 
+        //Set the RecyclerView properties
         mRecyclerView.setAdapter(mAdapter);
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.addOnScrollListener(mScrollListener);
 
+        //Load the first page
         loadNextPage();
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
+            //If it's the home button
             case android.R.id.home:
+                //Simulate the Back button
                 this.onBackPressed();
                 return true;
         }
@@ -88,10 +97,8 @@ public class AllReviewsActivity extends AppCompatActivity
     }
 
     private void loadNextPage(){
-        Log.d("log", "page " + currPage);
-        currPage++;
-        Log.d("log", "page " + currPage);
-
+        //Increment the page number
+        currPageNum++;
         //Activate Loader
         getReviews();
     }
@@ -108,23 +115,25 @@ public class AllReviewsActivity extends AppCompatActivity
 
                     @Override
                     protected void onStartLoading() {
-                        Log.d("test", "onStartLoading");
                         super.onStartLoading();
                         forceLoad();
                     }
 
                     @Override
                     public ArrayList<ReviewObject> loadInBackground() {
+                        //Create a variable to (hopefully) store the retrieved reviews in
                         ArrayList<ReviewObject> retrievedReviews = new ArrayList<>();
                         try{
-                            URL reviewUrl = new URL(movieAPIManager.getReviewPath(currMovie.getId(), currPage));
-                            Log.d("reviewPath", reviewUrl.toString());
+                            //Get the URL to the Reviews
+                            URL reviewUrl = new URL(movieAPIManager.getReviewPath(currMovie.getId(), currPageNum));
+                            //Get the reviews from the URL
                             retrievedReviews = networkUtils.getReviewsFromUrl(reviewUrl);
                         } catch (MalformedURLException e) {
                             e.printStackTrace();
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
+                        //Return the reviews
                         return retrievedReviews;
                     }
                 };
@@ -132,13 +141,11 @@ public class AllReviewsActivity extends AppCompatActivity
 
             @Override
             public void onLoadFinished(android.support.v4.content.Loader<ArrayList<ReviewObject>> loader, ArrayList<ReviewObject> reviewObjects) {
+                //If there's actually reviews,
                 if(reviewObjects != null && reviewObjects.size() > 0){
-                    int reviewCount = reviewObjects.size();
-                    //I need to implement the endlessscrolllistener :<
-                    Log.d("test", "Finished loading");
-                    Log.d("test", "List is " + reviewCount + " long");
-
+                    //Add the reviews to the allReviews variable
                     allReviews.addAll(reviewObjects);
+                    //Notify the Adapter that the dataset has changed
                     mAdapter.notifyDataSetChanged();
                 }
             }
@@ -164,8 +171,4 @@ public class AllReviewsActivity extends AppCompatActivity
         }
     }
 
-    @Override
-    public void onReviewClick(int clickedItemIndex) {
-
-    }
 }
