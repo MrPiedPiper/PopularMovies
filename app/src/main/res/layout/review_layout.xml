@@ -9,6 +9,20 @@
     android:background="@color/colorPrimary">
 
     <TextView
+        android:id="@+id/review_number"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:background="@color/colorPrimaryDark"
+        android:padding="8dp"
+        android:textColor="@color/textviewTextColor"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Number"
+        android:layout_marginLeft="8dp" />
+
+    <TextView
         android:id="@+id/review_author"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -16,10 +30,10 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:background="@color/colorPrimaryDark"
-        android:padding="4dp"
+        android:padding="8dp"
         android:textColor="@color/textviewTextColor"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/review_number"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="Author" />
 
@@ -31,7 +45,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:background="@color/colorPrimaryDark"
-        android:padding="4dp"
+        android:padding="8dp"
         android:textColor="@color/textviewTextColor"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

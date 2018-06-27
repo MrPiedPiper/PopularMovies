@@ -33,11 +33,13 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ViewHolder
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
+        TextView mNumber;
         TextView mAuthor;
         TextView mContent;
 
         public ViewHolder(View v) {
             super(v);
+            mNumber = v.findViewById(R.id.review_number);
             mAuthor = v.findViewById(R.id.review_author);
             mContent = v.findViewById(R.id.review_content);
 
@@ -71,6 +73,7 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ViewHolder
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         ReviewObject currReview = mDataSet.get(position);
+        holder.mNumber.setText(String.valueOf(position+1));
         holder.mAuthor.setText(currReview.getAuthor());
         holder.mContent.setText(currReview.getContent());
     }
