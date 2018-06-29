@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.fancystachestudios.popularmovies.popularmovies.MovieAPI.MovieAPIManager;
 import com.fancystachestudios.popularmovies.popularmovies.MovieAPI.TrailerObject;
@@ -23,6 +24,8 @@ implements TrailerAdapter.TrailerClickListener{
     @BindView(R.id.custom_recyclerview)RecyclerView mRecyclerView;
 
     ArrayList<TrailerObject> allTrailers;
+
+    Toast generalUseToast;
 
     MovieAPIManager movieAPIManager = new MovieAPIManager();
 
@@ -64,8 +67,13 @@ implements TrailerAdapter.TrailerClickListener{
         String youtubeAddress = movieAPIManager.getYoutubeFromKey(allTrailers.get(clickedItemIndex).getKey());
         //Create a new ACTION_VIEW Intent to the YouTube video
         Intent youtubeIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(youtubeAddress));
-        //Start the Activity
-        startActivity(youtubeIntent);
+        if(youtubeIntent.resolveActivity(getPackageManager()) != null){
+            //Start the Activity
+            startActivity(youtubeIntent);
+        }else{
+            if(generalUseToast != null) generalUseToast.cancel();
+            generalUseToast.makeText(this, getResources().getString(R.string.detail_no_app), Toast.LENGTH_LONG).show();
+        }
     }
 
 }

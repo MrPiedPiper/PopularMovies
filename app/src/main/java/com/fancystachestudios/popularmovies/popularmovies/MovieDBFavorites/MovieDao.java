@@ -1,5 +1,6 @@
 package com.fancystachestudios.popularmovies.popularmovies.MovieDBFavorites;
 
+import android.arch.lifecycle.LiveData;
 import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Delete;
 import android.arch.persistence.room.Insert;
@@ -17,7 +18,7 @@ import java.util.List;
 public interface MovieDao {
 
     @Query("SELECT * FROM movies")
-    List<RoomMovieObject> getAll();
+    LiveData<List<RoomMovieObject>> getAll();
 
     @Query("SELECT * FROM movies WHERE id IN (:movieIds)")
     List<RoomMovieObject> loadAllByIds(int[] movieIds);

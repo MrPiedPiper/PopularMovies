@@ -41,6 +41,9 @@
     <!--all reviews intent extra data key-->
     <string name="detail_all_reviews_intent_extra_key">allReviews</string>
 
+    <!--No Youtube app or Browser to play Trailer Toast-->
+    <string name="detail_no_app">We couldn\'t find an app to play this trailer. Maybe try the Youtube app or a web browser?</string>
+
 
     <!--Main Activity Strings-->
 

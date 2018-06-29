@@ -58,7 +58,7 @@ dependencies {
 
 
     //Dependencies for Lifecycle including LiveData and ViewModel
-    def lifecycle_version = "1.1.1"
+    def lifecycle_version = "1.1.0"
 
     //ViewModel and LiveData
     implementation "android.arch.lifecycle:extensions:$lifecycle_version"

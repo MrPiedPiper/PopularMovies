@@ -20,6 +20,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.fancystachestudios.popularmovies.popularmovies.MovieAPI.MovieAPIManager;
 import com.fancystachestudios.popularmovies.popularmovies.MovieAPI.ReviewObject;
@@ -61,6 +62,8 @@ public class DetailActivity extends AppCompatActivity{
     @BindView(R.id.detail_reviews_button)Button allReviewsButton;
 
     Context currContext;
+
+    Toast generalUseToast;
 
 
     //Create the LoaderManager variable
@@ -413,12 +416,14 @@ public class DetailActivity extends AppCompatActivity{
     }
 
     public void playTrailer(){
-        Log.d("Play trailer", movieAPIManager.getYoutubeFromKey(currTrailer.getKey()));
-        Log.d("Play trailer", "Play trailer");
-
         String youtubeAddress = movieAPIManager.getYoutubeFromKey(currTrailer.getKey());
         Intent youtubeIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(youtubeAddress));
-        startActivity(youtubeIntent);
+        if(youtubeIntent.resolveActivity(getPackageManager()) != null){
+            startActivity(youtubeIntent);
+        }else{
+            if(generalUseToast != null) generalUseToast.cancel();
+            generalUseToast.makeText(this, getResources().getString(R.string.detail_no_app), Toast.LENGTH_LONG).show();
+        }
     }
 
     public void moreTrailersOnClick(View view){

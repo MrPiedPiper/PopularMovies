@@ -1,7 +1,10 @@
 package com.fancystachestudios.popularmovies.popularmovies;
 
 import android.annotation.SuppressLint;
+import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.Observer;
 import android.arch.persistence.room.Room;
+import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.LoaderManager;
 import android.content.Intent;
@@ -22,7 +25,6 @@ import android.widget.Spinner;
 
 import com.fancystachestudios.popularmovies.popularmovies.MovieAPI.MovieAPIManager;
 import com.fancystachestudios.popularmovies.popularmovies.MovieDBFavorites.AppDatabase;
-import com.fancystachestudios.popularmovies.popularmovies.MovieDBFavorites.MovieDao;
 import com.fancystachestudios.popularmovies.popularmovies.MovieDBFavorites.RoomMovieObject;
 import com.fancystachestudios.popularmovies.popularmovies.Utils.EndlessScrollListener;
 import com.fancystachestudios.popularmovies.popularmovies.Utils.MovieAdapter;
@@ -31,6 +33,7 @@ import com.fancystachestudios.popularmovies.popularmovies.Utils.NetworkUtils;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -79,6 +82,8 @@ public class MainActivity extends AppCompatActivity
 
     //Create array for storing the movies
     ArrayList<RoomMovieObject> movieArray = new ArrayList<>();
+    //Create array for storing the favorite movies
+    ArrayList<RoomMovieObject> favoriteArray = new ArrayList<>();
 
     //Current page
     private int currPage = 0;
@@ -119,6 +124,7 @@ public class MainActivity extends AppCompatActivity
         //Load the movies
         loadPopularMovies();
 
+        loadLiveFavorites();
 
     }
 
@@ -187,7 +193,11 @@ public class MainActivity extends AppCompatActivity
         mAdapter.resetList();
         movieArray.clear();
         mScrollListener.resetScroll();
-        loadNextPage();
+        if(currListSort.equals(getString(R.string.favorite_key))){
+            loadFavoriteMovies();
+        }else{
+            loadNextPage();
+        }
     }
 
     public void startRefreshLoadAnimation(){
@@ -237,7 +247,10 @@ public class MainActivity extends AppCompatActivity
         //Set the sort to Rating
         currListSort = getString(R.string.favorite_key);
         //Refresh the movies
-        refreshMovies();
+        //refreshMovies();
+        Log.d("refreshed", "there's " + favoriteArray.size() + " movies");
+        mAdapter.updateList(favoriteArray);
+        Log.d("refreshed", "there's " + favoriteArray.size() + " movies");
     }
 
     private void loadNextPage(){
@@ -283,11 +296,14 @@ public class MainActivity extends AppCompatActivity
                 //If the currListSort is Favorite Movies,
                 if(currListSort == getString(R.string.favorite_key)){
 
-                    //Create the movies ArrayList
-                    ArrayList<RoomMovieObject> movies = new ArrayList<>();
+                    //LiveData
+                    LiveData<List<RoomMovieObject>> liveMovies = favoriteDb.movieDao().getAll();
 
-                    //Add all the movies from the database to the movies variable
-                    movies.addAll(favoriteDb.movieDao().getAll());
+                    ArrayList<RoomMovieObject> movies = new ArrayList<>();
+                    if(liveMovies.getValue() != null){
+                        //Create the movies ArrayList and add all the live values
+                        movies.addAll(liveMovies.getValue());
+                    }
 
                     //Return the movies
                     return movies;
@@ -355,6 +371,21 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onLoaderReset(android.support.v4.content.Loader<ArrayList<RoomMovieObject>> loader) {
+
+    }
+
+    private void loadLiveFavorites(){
+
+        //LiveData
+        final LiveData<List<RoomMovieObject>> liveMovies = favoriteDb.movieDao().getAll();
+
+        liveMovies.observe(this, new Observer<List<RoomMovieObject>>() {
+            @Override
+            public void onChanged(@Nullable List<RoomMovieObject> roomMovieObjects) {
+                favoriteArray.addAll(roomMovieObjects);
+                Log.d("refreshed", "updated value to " + favoriteArray.size() + " objects");
+            }
+        });
 
     }
 
