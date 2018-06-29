@@ -303,6 +303,9 @@ public class MainActivity extends AppCompatActivity
                         URL movieSearchUrl = new URL(movieSearchArrayList.get(i));
                         //Get the movies
                         currPage = networkUtils.getMoviesFromUrl(movieSearchUrl);
+                        if(currPage == null){
+                            return null;
+                        }
                         //Set the movie variable
                         movies.addAll(currPage);
                     } catch (IOException e) {
