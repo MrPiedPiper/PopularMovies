@@ -26,6 +26,7 @@ import com.fancystachestudios.popularmovies.popularmovies.MovieAPI.MovieAPIManag
 import com.fancystachestudios.popularmovies.popularmovies.MovieAPI.ReviewObject;
 import com.fancystachestudios.popularmovies.popularmovies.MovieAPI.TrailerObject;
 import com.fancystachestudios.popularmovies.popularmovies.MovieDBFavorites.AppDatabase;
+import com.fancystachestudios.popularmovies.popularmovies.MovieDBFavorites.FavoritesDBSingleton;
 import com.fancystachestudios.popularmovies.popularmovies.MovieDBFavorites.MovieDao;
 import com.fancystachestudios.popularmovies.popularmovies.MovieDBFavorites.RoomMovieObject;
 import com.fancystachestudios.popularmovies.popularmovies.Utils.NetworkUtils;
@@ -131,7 +132,7 @@ public class DetailActivity extends AppCompatActivity{
         setViewsWithMovie(currMovie);
 
         //Open up the database
-        favoriteDb = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, getString(R.string.favorite_movies_table_name)).build();
+        favoriteDb = FavoritesDBSingleton.getInstance(this);
         //Get the Dao
         movieDao = favoriteDb.movieDao();
 
@@ -143,7 +144,6 @@ public class DetailActivity extends AppCompatActivity{
             @SuppressLint("StaticFieldLeak")
             @Override
             public android.support.v4.content.Loader<RoomMovieObject> onCreateLoader(int id, final Bundle args) {
-                Log.d("mytest", "created loader");
                 if(id == ID_LOADER_FAVORITES) {
                     return new android.support.v4.content.AsyncTaskLoader<RoomMovieObject>(getBaseContext()) {
 
@@ -162,7 +162,6 @@ public class DetailActivity extends AppCompatActivity{
                             AppDatabase favoriteDb = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, getString(R.string.favorite_movies_table_name)).build();
                             //Get the DAO
                             MovieDao movieDao = favoriteDb.movieDao();
-                            Log.d("mytest", String.valueOf(movieDao.findById(currMovie.getId())));
 
                             return movieDao.findById(currMovie.getId());
                         }
@@ -189,7 +188,6 @@ public class DetailActivity extends AppCompatActivity{
 
                                 RoomMovieObject testMovie = movieDao.findById(currMovie.getId());
 
-                                Log.d("movieTest", String.valueOf(testMovie.getId()));
                             }else{
                                 movieDao.delete(movieDao.findById(currMovie.getId()));
                             }
@@ -204,7 +202,6 @@ public class DetailActivity extends AppCompatActivity{
                                     }
                                 }
                             });
-                            Log.d("favorite", String.valueOf(isFavorite));
                             return null;
                         }
 
@@ -334,14 +331,12 @@ public class DetailActivity extends AppCompatActivity{
 
                     @Override
                     protected void onStartLoading() {
-                        Log.d("Loadertest", "onStartLoading");
                         super.onStartLoading();
                         forceLoad();
                     }
 
                     @Override
                     public ArrayList<TrailerObject> loadInBackground()  {
-                        Log.d("Loadertest", "loadInBackground");
                         ArrayList<TrailerObject> retrievedTrailers = null;
                         try {
                             URL trailerUrl = new URL(movieAPIManager.getTrailerListPath(currMovie.getId()));
@@ -468,8 +463,6 @@ public class DetailActivity extends AppCompatActivity{
             public void onLoadFinished(android.support.v4.content.Loader<ArrayList<ReviewObject>> loader, ArrayList<ReviewObject> reviewObjects) {
                 if(reviewObjects != null && reviewObjects.size() > 0){
                     int reviewCount = reviewObjects.size();
-                    //I need to implement the endlessscrolllistener :<
-                    Log.d("test", "List is " + reviewCount + " long");
 
                     allReviewsButton.setVisibility(View.VISIBLE);
                     allReviewsButton.setText(getResources().getQuantityString(R.plurals.detail_all_reviews_button, reviewCount, reviewCount));

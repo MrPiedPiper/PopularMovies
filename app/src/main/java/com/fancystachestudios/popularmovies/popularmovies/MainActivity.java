@@ -3,7 +3,8 @@ package com.fancystachestudios.popularmovies.popularmovies;
 import android.annotation.SuppressLint;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Observer;
-import android.arch.persistence.room.Room;
+import android.arch.lifecycle.ViewModelProvider;
+import android.arch.lifecycle.ViewModelProviders;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.LoaderManager;
@@ -25,6 +26,8 @@ import android.widget.Spinner;
 
 import com.fancystachestudios.popularmovies.popularmovies.MovieAPI.MovieAPIManager;
 import com.fancystachestudios.popularmovies.popularmovies.MovieDBFavorites.AppDatabase;
+import com.fancystachestudios.popularmovies.popularmovies.MovieDBFavorites.FavoritesDBSingleton;
+import com.fancystachestudios.popularmovies.popularmovies.MovieDBFavorites.FavoritesViewModel;
 import com.fancystachestudios.popularmovies.popularmovies.MovieDBFavorites.RoomMovieObject;
 import com.fancystachestudios.popularmovies.popularmovies.Utils.EndlessScrollListener;
 import com.fancystachestudios.popularmovies.popularmovies.Utils.MovieAdapter;
@@ -58,6 +61,13 @@ public class MainActivity extends AppCompatActivity
     @BindView(R.id.main_loading_imageview) ImageView mRefreshLoadingImageView;
     @BindView(R.id.main_no_movies_text_layout) ConstraintLayout mNoMoviesTextLayout;
 
+
+    Bundle currInstanceState;
+
+    static final String STATE_SORT_TYPE = "sortType";
+    static final String STATE_SCROLL_POSITION = "scrollPos";
+    static final String STATE_SORT_INDEX = "sortIndex";
+
     //Declare the anim variable
     Animation anim;
 
@@ -80,6 +90,9 @@ public class MainActivity extends AppCompatActivity
     //Set default sort
     String currListSort = MovieAPIManager.POPULARITY;
 
+    //Menu sort selection Spinner
+    Spinner sortSpinner;
+
     //Create array for storing the movies
     ArrayList<RoomMovieObject> movieArray = new ArrayList<>();
     //Create array for storing the favorite movies
@@ -91,9 +104,15 @@ public class MainActivity extends AppCompatActivity
     //Load the Database
     AppDatabase favoriteDb;
 
+    //boolean to check if it's the first start for the spinner misfire on starting
+    boolean spinnerMisfiring = true;
+    //boolean to check if it's the first start for the LiveDate misfire on starting
+    boolean liveDateMisfiring = true;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        currInstanceState = savedInstanceState;
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
@@ -109,8 +128,10 @@ public class MainActivity extends AppCompatActivity
         mScrollListener = new EndlessScrollListener(mLayoutManager) {
             @Override
             protected void addItems() {
-                //When more items are needed, load next page
-                loadNextPage();
+                //When more items are needed, (if the user's not looking at the favorites,) load next page
+                if(!(currListSort.equals(getString(R.string.favorite_key)))){
+                    loadNextPage();
+                }
             }
         };
         mRecyclerView.addOnScrollListener(mScrollListener);
@@ -119,10 +140,13 @@ public class MainActivity extends AppCompatActivity
         mNoMoviesTextLayout.setVisibility(View.INVISIBLE);
 
         //Set the room variable to the database
-        favoriteDb = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, getString(R.string.favorite_movies_table_name)).build();
+        favoriteDb = FavoritesDBSingleton.getInstance(this);
+
+
+        restoreState(savedInstanceState);
 
         //Load the movies
-        loadPopularMovies();
+        refreshMovies();
 
         loadLiveFavorites();
 
@@ -136,7 +160,7 @@ public class MainActivity extends AppCompatActivity
 
         //Get the sorting Spinner
         MenuItem item = menu.findItem(R.id.main_menu_spinner);
-        final Spinner spinner = (Spinner)item.getActionView();
+        sortSpinner = (Spinner)item.getActionView();
 
         //Create an ArrayAdapter for the spinner
         ArrayAdapter<CharSequence> spinnerAdapter = ArrayAdapter.createFromResource(this,
@@ -145,14 +169,21 @@ public class MainActivity extends AppCompatActivity
         //Set the Spinner's dropdown text to R.layout.custom_spinner_text
         spinnerAdapter.setDropDownViewResource(R.layout.custom_spinner_text);
         //Set the Spinner's adapter
-        spinner.setAdapter(spinnerAdapter);
+        sortSpinner.setAdapter(spinnerAdapter);
 
         //Add click functionality to the Spinner
-        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        sortSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                //Check if the function is running just because of the activity being created
+                if(spinnerMisfiring){
+                    spinnerMisfiring = false;
+                    return;
+                }
+                //Reset the Adapter dataset(For a nicer loading look)
+                mAdapter.updateList(new ArrayList<RoomMovieObject>());
                 //Get the text from the item selected
-                String itemText = spinner.getSelectedItem().toString();
+                String itemText = sortSpinner.getSelectedItem().toString();
                 //Get all of the text in the Spinner
                 String[] possibleItems = getResources().getStringArray(R.array.main_menu_sorting_spinner_array);
                 //Sort through each for the sort type and call the load function
@@ -170,6 +201,9 @@ public class MainActivity extends AppCompatActivity
 
             }
         });
+        if(currInstanceState != null){
+            sortSpinner.setSelection(currInstanceState.getInt(STATE_SORT_INDEX));
+        }
         return true;
     }
 
@@ -190,7 +224,7 @@ public class MainActivity extends AppCompatActivity
         startRefreshLoadAnimation();
         //Reset the movies, and load some new ones
         currPage = 0;
-        mAdapter.resetList();
+        //mAdapter.resetList();
         movieArray.clear();
         mScrollListener.resetScroll();
         if(currListSort.equals(getString(R.string.favorite_key))){
@@ -219,9 +253,12 @@ public class MainActivity extends AppCompatActivity
         //Create a new Intent to move to the DetaiActivity
         Intent detailActivityIntent = new Intent(this, DetailActivity.class);
         //putExtra the movie selected
-        detailActivityIntent.putExtra(getString(R.string.detail_intent_tag), movieArray.get(clickedItemIndex));
+        if(currListSort.equals(getString(R.string.favorite_key))){
+            detailActivityIntent.putExtra(getString(R.string.detail_intent_tag), favoriteArray.get(clickedItemIndex));
+        }else{
+            detailActivityIntent.putExtra(getString(R.string.detail_intent_tag), movieArray.get(clickedItemIndex));
+        }
 
-        Log.d("ratingtest", String.valueOf(movieArray.get(clickedItemIndex).getVoteAverage()));
         //Start the Activity
         startActivity(detailActivityIntent);
     }
@@ -248,9 +285,9 @@ public class MainActivity extends AppCompatActivity
         currListSort = getString(R.string.favorite_key);
         //Refresh the movies
         //refreshMovies();
-        Log.d("refreshed", "there's " + favoriteArray.size() + " movies");
         mAdapter.updateList(favoriteArray);
-        Log.d("refreshed", "there's " + favoriteArray.size() + " movies");
+        stopRefreshLoadAnimation();
+        mNoMoviesTextLayout.setVisibility(View.INVISIBLE);
     }
 
     private void loadNextPage(){
@@ -294,7 +331,7 @@ public class MainActivity extends AppCompatActivity
             @Override
             public ArrayList<RoomMovieObject> loadInBackground() {
                 //If the currListSort is Favorite Movies,
-                if(currListSort == getString(R.string.favorite_key)){
+                if(currListSort.equals(getString(R.string.favorite_key))){
 
                     //LiveData
                     LiveData<List<RoomMovieObject>> liveMovies = favoriteDb.movieDao().getAll();
@@ -339,7 +376,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onLoadFinished(android.support.v4.content.Loader<ArrayList<RoomMovieObject>> loader, ArrayList<RoomMovieObject> mMovieList) {
         //If there's no movies in the ArrayList show error message to the user
-        if(mMovieList == null || mMovieList.size() == 0) {
+        if(mMovieList == null || mMovieList.size() == 0 && !(currListSort.equals(getString(R.string.favorite_key)))) {
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
@@ -375,19 +412,45 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void loadLiveFavorites(){
-
-        //LiveData
-        final LiveData<List<RoomMovieObject>> liveMovies = favoriteDb.movieDao().getAll();
-
-        liveMovies.observe(this, new Observer<List<RoomMovieObject>>() {
+        //Gets the ViewModel
+        FavoritesViewModel favoritesViewModel = ViewModelProviders.of(this).get(FavoritesViewModel.class);
+        //Gets the list of favorites, and adds an Observer
+        favoritesViewModel.getFavorites().observe(this, new Observer<List<RoomMovieObject>>() {
             @Override
             public void onChanged(@Nullable List<RoomMovieObject> roomMovieObjects) {
+                //When there's a change
+                //Clear the favoritesArray
+                favoriteArray.clear();
+                //Add the new data
                 favoriteArray.addAll(roomMovieObjects);
-                Log.d("refreshed", "updated value to " + favoriteArray.size() + " objects");
+                //And if this isn't the first time this is activated, (Because it activates when it's first created)
+                if(!liveDateMisfiring){
+                    //Update the adapter with the new data
+                    mAdapter.updateList(favoriteArray);
+                }else{
+                    //Else, update the variable telling me this has run
+                    liveDateMisfiring = false;
+                }
             }
         });
 
     }
 
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
 
+        outState.putString(STATE_SORT_TYPE, currListSort);
+        outState.putInt(STATE_SCROLL_POSITION, mLayoutManager.findFirstCompletelyVisibleItemPosition());
+        outState.putInt(STATE_SORT_INDEX, sortSpinner.getSelectedItemPosition());
+
+
+        super.onSaveInstanceState(outState);
+    }
+
+    private void restoreState(Bundle savedInstanceState) {
+        if(savedInstanceState != null){
+            currListSort = savedInstanceState.getString(STATE_SORT_TYPE);
+            mRecyclerView.scrollToPosition(savedInstanceState.getInt(STATE_SCROLL_POSITION));
+        }
+    }
 }
